@@ -24,3 +24,7 @@ You can write your own JSON configurations and store them in `schedules.js`.  Ea
     "alarmsBeforeEnd"   : [ "3:00" ]
 }
 ~~~
+
+## Demo
+
+You can see this in action at <https://timer.rohrbachscience.com/>
