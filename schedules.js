@@ -63,21 +63,24 @@ var schedules = [
 //function for printing all the options.  Argument is element where it should be added
 function writeScheduleOptions(HTMLElement) {
   
-  let initString = '';
-  
   for (let i = 0; i < schedules.length; i++) {
+    //parse the schedule
     const data = JSON.parse(schedules[i]);
-    initString += `
-    <li id="initOption-${i}">
-      <a onclick="chooseInitOption(${i})" onmouseup="return false">
-        ${data.title}
-      </a>
-    </li>
-    `;
+    
+    //make a new entry into the nav ul
+    let newLI = document.createElement('li');
+    let newLink = document.createElement('a');
+    newLI.appendChild(newLink);
+    newLI.setAttribute('id', `initOption-${i}`);
+    newLink.addEventListener('click', function() { chooseInitOption(i) })
+    newLink.addEventListener('mouseup', function() { return false; })
+    newLink.textContent = data.title;
+
+    //append the new entry
+    HTMLElement.appendChild(newLI)
 
   }
 
-  HTMLElement.innerHTML = initString;
 }
 
 function chooseInitOption(key) {
