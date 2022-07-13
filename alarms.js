@@ -24,7 +24,7 @@ function initializeClock(configJSON) {
   blockTimes.forEach(setTimeWindows);
 
   //put title in its place
-  document.getElementById('scheduleName').innerHTML = configObject.title;
+  document.getElementById('scheduleName').textContent = configObject.title;
 
   //update the #schedTable
   updateSchedTable();
@@ -60,6 +60,7 @@ Period object will include
         period (arbitrary string), 
         start (a Date object for the start of the period), 
         end (a Date object for the end of the period),
+        trElement (an HTML <tr> element containing schedule info)
         alarms (array of Date objects for when an alarm should accur)
       }
 */
@@ -76,17 +77,52 @@ function Period (periodName, startTime, endTime) {
   alarmsAfter.forEach( function(value, key) {
     newTime = new Date(startTime.getTime() + parseInt(findMilliSecs(value)));
     if (newTime > timeOfPageLoad) {
-      alarmsArray.push(newTime);
+      alarmsArray.push(new Alarm(newTime));
     }
   });
   alarmsBefore.forEach( function(value, key) {
     newTime = new Date(endTime.getTime() - parseInt(findMilliSecs(value)));
     if (newTime > timeOfPageLoad) {
-      alarmsArray.push(newTime);
+      alarmsArray.push(new Alarm (newTime));
     }
   });
   this.alarms = alarmsArray;
 
+  this.trElement = document.createElement('tr');
+  let timeTD     = document.createElement('td');
+  let periodTD   = document.createElement('td');
+  this.trElement.appendChild(timeTD);
+  this.trElement.appendChild(periodTD);
+  timeTD.textContent = `${printTimeString(this.start,false)} - ${printTimeString(this.end,false)}`;
+  periodTD.textContent = this.period;
+  let newDiv     = document.createElement('div');
+  newDiv.classList.add('tags')
+  periodTD.appendChild(newDiv);
+  
+  for (let i = 0; i < alarmsArray.length; i++) {
+    newDiv.appendChild(alarmsArray[i].tagElement);
+  }
+
+}
+
+Period.prototype.removeAlarm = function(key) {
+  this.alarms[key].tagElement.remove();
+  this.alarms.splice(key,1); 
+}
+
+//define the Alarm object
+/*
+Alarm object will include 
+      {
+        time (a Date object for when the alarm should occur)
+        tagElement (a <span class="tag"> element for showing alarms on schedule)
+      }
+*/
+function Alarm (alarmTime) {
+  this.time       = alarmTime;
+  this.tagElement = document.createElement('span');
+  this.tagElement.classList.add('tag', 'is-info');
+  this.tagElement.textContent = printTimeString(this.time,true);
 }
 
 //converts an "hh:mm" string to a Date object today at hh:mm
@@ -101,26 +137,18 @@ function convertToTime(theTime) {
 
 //Print the Schedule Table
 function updateSchedTable() {
-  const schedBody = document.getElementById('schedTable').getElementsByTagName('tbody')[0];
-  let schedString = '';
-  periodArray.forEach(function(value, key) {
+  const schedTable = document.getElementById('schedTable');
+  
+  //clear and recreate the <tbody>
+  schedTable.getElementsByTagName('tbody')[0].remove();
+  schedBody = document.createElement('tbody');
+  schedTable.appendChild(schedBody);
 
-
-    schedString += `<tr id="schedRowKey-${key}">`;
-    schedString += `<td>${printTimeString(value.start,false)} - ${printTimeString(value.end,false)}</td>`;
-    schedString += `<td>${value.period}<br><div id="alarmListKey-${key}" class="tags">${listAllAlarms(value.alarms)}</div></td>`
-    schedString += '</tr>';
-  })
-  schedBody.innerHTML = schedString;
-}
-
-//make tags for all the alarms
-function listAllAlarms(alarmArray) {
-  let alarmString = '';
-  for (let i = 0; i < alarmArray.length; i++) {
-    alarmString += `<span class="tag is-info">${printTimeString(alarmArray[i],true)}</span>`;
+  //retrieve the schedule <tr>'s and append them
+  for (let i = 0; i < periodArray.length; i++) {
+    schedBody.appendChild(periodArray[i].trElement);
   }
-  return alarmString;
+
 }
 
 
@@ -134,7 +162,7 @@ function updateTime() {
     //getInfo[0] is the human readable period
     //getInfo[1] is the key to this period in periodArray
 
-  displayTime.innerHTML = printTimeString(nowTime, true);    //update the time
+  displayTime.textContent = printTimeString(nowTime, true);    //update the time
   infoBlock.innerHTML = `
     <p class="block">Current Period: ${getInfo[0]}</p>
     <p class="block">
@@ -150,8 +178,7 @@ function updateTime() {
   
   if (getInfo[1] != undefined) {                       //if getInfo[1] is undefined, we aren't in a period
     checkAlarm(nowTime, getInfo[1]);                   //check for alarms
-    document.getElementById(`schedRowKey-${getInfo[1]}`).classList.add('is-selected')
-    document.getElementById(`alarmListKey-${getInfo[1]}`).innerHTML = listAllAlarms(periodArray[getInfo[1]].alarms);
+    periodArray[getInfo[1]].trElement.classList.add('is-selected')
   }
 
   setTimeout(updateTime, 1000);                       //call this function again in one second
@@ -226,12 +253,12 @@ function findMilliSecs(mmSS) {
 function checkAlarm(nowTime,periodArrayKey) {
   const alarmsArray = periodArray[periodArrayKey].alarms;
   for (let i = 0; i < alarmsArray.length; i++) {
-    if ( alarmsArray[i] - nowTime <= 0 ) {
+    if ( alarmsArray[i].time - nowTime <= 0 ) {
       //do the alarm!
       doAlarm();
 
       //remove this alarm from the periodArray so it doesn't get called again
-      periodArray[periodArrayKey].alarms.splice(i,1); 
+      periodArray[periodArrayKey].removeAlarm(i); 
     } 
   }
 }
