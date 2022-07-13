@@ -62,6 +62,9 @@ Period object will include
         end (a Date object for the end of the period),
         trElement (an HTML <tr> element containing schedule info)
         alarms (array of Date objects for when an alarm should accur)
+        removeAlarm(key): remove the <tr> of alarms[key] and then delete it from the alarms array
+        isCurrentPeriod(theTime): determine if the Date Object theTime falls within this period (theTime defaults to now)
+        makeSelected(boolValue): turn on (if true) or off (if false) the .is-selected class on the trElemement
       }
 */
 function Period (periodName, startTime, endTime) {
@@ -109,6 +112,18 @@ function Period (periodName, startTime, endTime) {
 Period.prototype.removeAlarm = function(key) {
   this.alarms[key].tagElement.remove();
   this.alarms.splice(key,1); 
+}
+
+Period.prototype.isCurrentPeriod = function(theTime = new Date()) {
+  return (theTime >= this.start && theTime <= this.end)
+}
+
+Period.prototype.makeSelected = function(boolValue) {
+  if (boolValue) {
+    this.trElement.classList.add('is-selected')
+  } else {
+    this.trElement.classList.remove('is-selected')
+  }
 }
 
 //define the Alarm object
@@ -231,7 +246,7 @@ function whichWindow(theTime, theArray) {
   let whereWeAre  = 'passing period';
   let indexKey    = undefined;
   theArray.every( function(value, index) {
-    if (theTime >= value.start && theTime <= value.end){
+    if (value.isCurrentPeriod()) {
       whereWeAre = value.period;
       indexKey = index;
       return false;
