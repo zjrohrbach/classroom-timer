@@ -88,6 +88,7 @@ function Period (periodName, startTime, endTime) {
   });
   this.alarms = alarmsArray;
 
+  //make a <tr> element for the schedule table
   this.trElement = document.createElement('tr');
   let timeTD     = document.createElement('td');
   let periodTD   = document.createElement('td');
@@ -95,12 +96,12 @@ function Period (periodName, startTime, endTime) {
   this.trElement.appendChild(periodTD);
   timeTD.textContent = `${printTimeString(this.start,false)} - ${printTimeString(this.end,false)}`;
   periodTD.textContent = this.period;
-  let newDiv     = document.createElement('div');
+  let newDiv     = document.createElement('div'); //this is going to hold all the alarm tags
   newDiv.classList.add('tags')
   periodTD.appendChild(newDiv);
   
   for (let i = 0; i < alarmsArray.length; i++) {
-    newDiv.appendChild(alarmsArray[i].tagElement);
+    newDiv.appendChild(alarmsArray[i].tagElement); //get all the alarms
   }
 
 }
@@ -154,34 +155,33 @@ function updateSchedTable() {
 
 //update the time and put it in the #displayTime, also check for alarms
 function updateTime() {
-  const displayTime = document.getElementById('displayTime');
-  const infoBlock = document.getElementById('infoBlock');
+  const displayTime   = document.getElementById('displayTime');
+  const currentPeriod = document.getElementById('currentPeriod');
+  const infoElement   = document.getElementById('info');
   const nowTime = new Date();
   
   const getInfo = whichWindow(nowTime, periodArray);   //determine which time window we are in
     //getInfo[0] is the human readable period
     //getInfo[1] is the key to this period in periodArray
 
-  displayTime.textContent = printTimeString(nowTime, true);    //update the time
-  infoBlock.innerHTML = `
-    <p class="block">Current Period: ${getInfo[0]}</p>
-    <p class="block">
-      Alarms are set each period to <strong>${alarmsAfter.join(", ")}</strong> after the start of the period 
-      and <strong>${alarmsBefore.join(", ")}</strong> before the end of the period.
-    </p>
-  `;
+  displayTime.textContent   = printTimeString(nowTime, true);    //update the time
+  currentPeriod.textContent = getInfo[0];                        //update the period name
+  infoElement.getElementsByTagName('strong')[0].textContent = alarmsAfter.join(", ");  //list alarms in infoElement
+  infoElement.getElementsByTagName('strong')[1].textContent = alarmsBefore.join(", "); //list alarms in infoElement
 
+
+  //remove all .is-selected classes and then reapply to only current period (if there is one)
   const classArray = document.querySelectorAll('.is-selected');
   for (let i = 0; i < classArray.length; i++) {
     classArray[i].classList.remove('is-selected');
   }
-  
   if (getInfo[1] != undefined) {                       //if getInfo[1] is undefined, we aren't in a period
     checkAlarm(nowTime, getInfo[1]);                   //check for alarms
     periodArray[getInfo[1]].trElement.classList.add('is-selected')
   }
 
-  setTimeout(updateTime, 1000);                       //call this function again in one second
+  //call this function again in one second
+  setTimeout(updateTime, 1000);
 }
 
 //make sure numbers always have two digits
