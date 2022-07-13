@@ -1,6 +1,6 @@
 //initialize global variables
-var alarmsAfter, alarmsBefore, timeOfPageLoad;
-var periodArray = [];
+let alarmsAfter, alarmsBefore, timeOfPageLoad;
+let periodArray = [];
 
 //initialize clock with JSON.  
 function initializeClock(configJSON) {
@@ -144,7 +144,7 @@ function Alarm (alarmTime) {
 //converts an "hh:mm" string to a Date object today at hh:mm
 function convertToTime(theTime) {
   partsOfTime = theTime.split(":");
-  theTime = new Date();
+  theTime     = new Date();
   theTime.setHours(partsOfTime[0])
   theTime.setMinutes(partsOfTime[1])
   theTime.setSeconds(0)
@@ -155,8 +155,8 @@ function convertToTime(theTime) {
 function updateSchedTable() {
 
   //clear and recreate the <tbody>
-  const schedTable = document.getElementById('schedTable');
-  const schedBody = document.createElement('tbody');
+  const schedTable  = document.getElementById('schedTable');
+  const schedBody   = document.createElement('tbody');
   schedTable.getElementsByTagName('tbody')[0].remove();
   schedTable.appendChild(schedBody);
 
@@ -201,11 +201,7 @@ function updateTime() {
 
 //make sure numbers always have two digits
 function leadingZeroes(number) {
-  if (number < 10) {
-    return "0" + number;
-  } else {
-    return number;
-  }
+  return (number < 10) ? "0" + number : number;
 }
 
 //print Date object in human readable manner
@@ -214,7 +210,7 @@ function printTimeString(theDate, includeSecs) {
   const theMin  = theDate.getMinutes();
   const theSec  = theDate.getSeconds();
 
-  var amPm, hourToPrint;
+  let amPm, hourToPrint;
   if (theHour < 13) {
     amPm    = "am";
     hourToPrint = leadingZeroes(theHour);
