@@ -1,5 +1,5 @@
 //JSON templates for differnt Days [ template name, JSON ]
-var schedules = [
+let schedules = [
   `
   {
     "title"   : "7 Periods",
@@ -60,40 +60,21 @@ var schedules = [
    `
 ];
 
-//function for printing all the options.  Argument is element where it should be added
-function writeScheduleOptions(HTMLElement) {
-  
-  for (let i = 0; i < schedules.length; i++) {
-    //parse the schedule
-    const data = JSON.parse(schedules[i]);
-    
-    //make a new entry into the nav ul
-    let newLI = document.createElement('li');
-    let newLink = document.createElement('a');
-    newLI.appendChild(newLink);
-    newLI.setAttribute('id', `initOption-${i}`);
-    newLink.addEventListener('click', function() { chooseInitOption(i) });
-    newLink.addEventListener('mouseup', function() { return false; });
-    newLink.textContent = data.title;
-
-    //append the new entry
-    HTMLElement.appendChild(newLI);
-
-  }
-
-}
 
 function chooseInitOption(key) {
-
-  const classArray = document.getElementById('schedOptions').querySelectorAll('.is-active');
-  for (let i = 0; i < classArray.length; i++) {
-    classArray[i].classList.remove('is-active');
-  }
 
   if (key != 'custom' ) { 
     initializeClock(schedules[key]);
     document.getElementById('customJSONEntry').value = schedules[key];
-    document.getElementById(`initOption-${key}`).classList.add('is-active');
+    document.getElementById(`initOption-${key}`);
+  }
+
+  for (let i = 0; i < buttonElements.length; i++) {
+    if (i == key) {
+      buttonElements[i].classList.add('is-active');
+    } else {
+      buttonElements[i].classList.remove('is-active');
+    }
   }
 
 }
@@ -108,9 +89,30 @@ function openModal() {
 
 
 
+//////////////////////////////////////////////////
+///////// INITIALIZE THE HTML DOCUMENT ///////////
+//////////////////////////////////////////////////
 
-// INITIALIZE THE HTML DOCUMENT
-writeScheduleOptions(document.getElementById('schedOptions'));
+
+let buttonElements = [];
+const placeToPut = document.getElementById('schedOptions');
+
+for (let i = 0; i < schedules.length; i++) {
+  //parse the schedule
+  const data = JSON.parse(schedules[i]);
+  
+  //make a new entry into the nav ul
+  let newLI = document.createElement('li');
+  let newLink = document.createElement('a');
+  newLI.appendChild(newLink);
+  newLink.addEventListener('click', function() { chooseInitOption(i) });
+  newLink.addEventListener('mouseup', function() { return false; });
+  newLink.textContent = data.title;
+
+  //append the new entry
+  buttonElements.push(newLI)
+  placeToPut.appendChild(newLI);
+}
 
 function handleAddListeners(stmt, fn) {
   elementArray = document.querySelectorAll(stmt);
