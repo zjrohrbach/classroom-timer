@@ -19,9 +19,9 @@ function initializeClock(configJSON) {
   alarmsBefore       = configObject.alarmsBeforeEnd;
   timeOfPageLoad     = new Date();
 
-  //call setTimeWindows() for each block
+  //call setPeriodObj() for each block
   const blockTimes   = configObject.blocks;
-  blockTimes.forEach(setTimeWindows);
+  blockTimes.forEach(setPeriodObj);
 
   //put title in its place
   document.getElementById('scheduleName').textContent = configObject.title;
@@ -43,7 +43,7 @@ blockTime object should include
         end (hh:mm in military time)
       }
 */
-function setTimeWindows(blockTime) {
+function setPeriodObj(blockTime) {
   periodArray.push(
     new Period(
       blockTime.period, 
@@ -242,11 +242,9 @@ function checkAlarm(nowTime,periodArrayKey) {
   const alarmsArray = periodArray[periodArrayKey].alarms;
   for (let i = 0; i < alarmsArray.length; i++) {
     if ( alarmsArray[i].time - nowTime <= 0 ) {
-      //do the alarm!
       doAlarm();
-
-      //remove this alarm from the periodArray so it doesn't get called again
-      periodArray[periodArrayKey].removeAlarm(i); 
+      periodArray[periodArrayKey].removeAlarm(i);    
+        //remove this alarm from the periodArray so it doesn't get called again
     } 
   }
 }
