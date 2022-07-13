@@ -72,12 +72,12 @@ function writeScheduleOptions(HTMLElement) {
     let newLink = document.createElement('a');
     newLI.appendChild(newLink);
     newLI.setAttribute('id', `initOption-${i}`);
-    newLink.addEventListener('click', function() { chooseInitOption(i) })
-    newLink.addEventListener('mouseup', function() { return false; })
+    newLink.addEventListener('click', function() { chooseInitOption(i) });
+    newLink.addEventListener('mouseup', function() { return false; });
     newLink.textContent = data.title;
 
     //append the new entry
-    HTMLElement.appendChild(newLI)
+    HTMLElement.appendChild(newLI);
 
   }
 
@@ -90,10 +90,10 @@ function chooseInitOption(key) {
     classArray[i].classList.remove('is-active');
   }
 
-  if(key != 'custom' ) { 
-    initializeClock(schedules[key])
+  if (key != 'custom' ) { 
+    initializeClock(schedules[key]);
     document.getElementById('customJSONEntry').value = schedules[key];
-    document.getElementById(`initOption-${key}`).classList.add('is-active') 
+    document.getElementById(`initOption-${key}`).classList.add('is-active');
   }
 
 }
