@@ -153,17 +153,22 @@ function convertToTime(theTime) {
 
 //Print the Schedule Table
 function updateSchedTable() {
-  const schedTable = document.getElementById('schedTable');
-  
+
   //clear and recreate the <tbody>
+  const schedTable = document.getElementById('schedTable');
+  const schedBody = document.createElement('tbody');
   schedTable.getElementsByTagName('tbody')[0].remove();
-  schedBody = document.createElement('tbody');
   schedTable.appendChild(schedBody);
 
   //retrieve the schedule <tr>'s and append them
   for (let i = 0; i < periodArray.length; i++) {
     schedBody.appendChild(periodArray[i].trElement);
   }
+
+  //update information about what alarms are set.
+  const infoElement   = document.getElementById('info');
+  infoElement.getElementsByTagName('strong')[0].textContent = alarmsAfter.join(", ");  //list alarms in infoElement
+  infoElement.getElementsByTagName('strong')[1].textContent = alarmsBefore.join(", "); //list alarms in infoElement
 
 }
 
@@ -172,31 +177,26 @@ function updateSchedTable() {
 function updateTime() {
   const displayTime   = document.getElementById('displayTime');
   const currentPeriod = document.getElementById('currentPeriod');
-  const infoElement   = document.getElementById('info');
   const nowTime = new Date();
-  
-  const getInfo = whichWindow(nowTime, periodArray);   //determine which time window we are in
-    //getInfo[0] is the human readable period
-    //getInfo[1] is the key to this period in periodArray
-
+ 
+  //update display
   displayTime.textContent   = printTimeString(nowTime, true);    //update the time
-  currentPeriod.textContent = getInfo[0];                        //update the period name
-  infoElement.getElementsByTagName('strong')[0].textContent = alarmsAfter.join(", ");  //list alarms in infoElement
-  infoElement.getElementsByTagName('strong')[1].textContent = alarmsBefore.join(", "); //list alarms in infoElement
+  currentPeriod.textContent = 'passing period';                  //it is passing period unless the for loop below overrides this
 
-
-  //remove all .is-selected classes and then reapply to only current period (if there is one)
-  const classArray = document.querySelectorAll('.is-selected');
-  for (let i = 0; i < classArray.length; i++) {
-    classArray[i].classList.remove('is-selected');
-  }
-  if (getInfo[1] != undefined) {                       //if getInfo[1] is undefined, we aren't in a period
-    checkAlarm(nowTime, getInfo[1]);                   //check for alarms
-    periodArray[getInfo[1]].trElement.classList.add('is-selected')
-  }
+  //determine which period we are in.  
+  for (let i = 0; i < periodArray.length; i++) {
+    if (periodArray[i].isCurrentPeriod()) {
+      periodArray[i].makeSelected(true);                  //add the .is-selected class
+      currentPeriod.textContent = periodArray[i].period;  //display the current period
+      checkAlarm(nowTime, i);                             //check for alarms
+    } else { 
+      periodArray[i].makeSelected(false);                 //remove the .is-selected class
+    }
+  } 
 
   //call this function again in one second
   setTimeout(updateTime, 1000);
+
 }
 
 //make sure numbers always have two digits
@@ -230,31 +230,8 @@ function printTimeString(theDate, includeSecs) {
   } else {
     timeString = `${hourToPrint}:${leadingZeroes(theMin)} ${amPm}`;
   }
-
   
   return timeString;
-}
-
-//determine which periodArray the current time falls within
-/*
-  returns an array [
-    string of the name attribute of period,
-    indexKey of the period
-  ]
-*/
-function whichWindow(theTime, theArray) {
-  let whereWeAre  = 'passing period';
-  let indexKey    = undefined;
-  theArray.every( function(value, index) {
-    if (value.isCurrentPeriod()) {
-      whereWeAre = value.period;
-      indexKey = index;
-      return false;
-    } else {
-      return true;
-    }
-  })
-  return [ whereWeAre, indexKey ];
 }
 
 //parse the string "mm:ss" and convert it to a number of milliseconds
