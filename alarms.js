@@ -1,27 +1,35 @@
 //initialize global variables
-let alarmsAfter, alarmsBefore, timeOfPageLoad;
+let timeOfPageLoad;
 let periodArray = [];
 
 //initialize clock with JSON.  
 function initializeClock(configJSON) {
 
   //clear all global variables
-  alarmsAfter    = null;
-  alarmsBefore   = null;
   timeOfPageLoad = null;
   periodArray    = [];
   
   //parse the configJSON
   const configObject = JSON.parse(configJSON);
 
-  //set global variables
-  alarmsAfter        = configObject.alarmsAfterStart;
-  alarmsBefore       = configObject.alarmsBeforeEnd;
+  //set global variable
   timeOfPageLoad     = new Date();
 
-  //call setPeriodObj() for each block
+  //make a new Period for each block object in the configObject
   const blockTimes   = configObject.blocks;
-  blockTimes.forEach(setPeriodObj);
+  const defaultAlarmsAfter  = configObject.defaultAlarmsAfterStart;
+  const defaultAlarmsBefore = configObject.defaultAlarmsBeforeEnd;
+  for (let i = 0; i < blockTimes.length; i++) {
+    periodArray.push(
+      new Period(
+        blockTimes[i].period, 
+        convertToTime(blockTimes[i].start), 
+        convertToTime(blockTimes[i].end),
+        blockTimes[i].alarmsAfterStart ?? defaultAlarmsAfter,
+        blockTimes[i].alarmsBeforeEnd  ?? defaultAlarmsBefore
+      )
+    )
+  }
 
   //put title in its place
   document.getElementById('scheduleName').textContent = configObject.title;
@@ -32,25 +40,6 @@ function initializeClock(configJSON) {
   //start the clock
   updateTime();
 
-}
-
-//creates a new Period Object from a blockTime object 
-/* 
-blockTime object should include 
-     {
-        period (arbitrary string), 
-        start (hh:mm in military time), 
-        end (hh:mm in military time)
-      }
-*/
-function setPeriodObj(blockTime) {
-  periodArray.push(
-    new Period(
-      blockTime.period, 
-      convertToTime(blockTime.start), 
-      convertToTime(blockTime.end)
-    )
-  );
 }
 
 //define the Period object
@@ -67,7 +56,7 @@ Period object will include
         makeSelected(boolValue): turn on (if true) or off (if false) the .is-selected class on the trElemement
       }
 */
-function Period (periodName, startTime, endTime) {
+function Period (periodName, startTime, endTime, alarmsAfter, alarmsBefore) {
   
   //define attributes
   this.period = periodName;
@@ -165,11 +154,6 @@ function updateSchedTable() {
     schedBody.appendChild(periodArray[i].trElement);
   }
 
-  //update information about what alarms are set.
-  const infoElement   = document.getElementById('info');
-  infoElement.getElementsByTagName('strong')[0].textContent = alarmsAfter.join(", ");  //list alarms in infoElement
-  infoElement.getElementsByTagName('strong')[1].textContent = alarmsBefore.join(", "); //list alarms in infoElement
-
 }
 
 
@@ -253,3 +237,6 @@ function checkAlarm(nowTime,periodArrayKey) {
 function doAlarm() {
   document.getElementById('sound1').play()
 }
+
+//when the page loads, start the clock
+updateTime();

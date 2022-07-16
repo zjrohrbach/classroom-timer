@@ -12,8 +12,8 @@ let schedules = [
       {  "period" : "Period 6" , "start" : "13:00" , "end" : "21:50" } ,
       {  "period" : "Period 7" , "start" : "22:00" , "end" : "23:57" }
     ] ,
-    "alarmsAfterStart"  : [ "0:45" ],
-    "alarmsBeforeEnd"   : [ "3:00" ]
+    "defaultAlarmsAfterStart"  : [ "0:45" ],
+    "defaultAlarmsBeforeEnd"   : [ "3:00" ]
   }
   `,
   `
@@ -26,8 +26,8 @@ let schedules = [
       {  "period" : "Period 5" , "start" : "13:00" , "end" : "21:50" } ,
       {  "period" : "Period 6" , "start" : "12:00" , "end" : "12:54" }
     ] ,
-    "alarmsAfterStart"  : [ "0:45" ],
-    "alarmsBeforeEnd"   : [ "3:00" ]
+    "defaultAlarmsAfterStart"  : [ "0:45" ],
+    "defaultAlarmsBeforeEnd"   : [ "3:00" ]
   }
   `,
   `
@@ -40,8 +40,8 @@ let schedules = [
       {  "period" : "Period 6" , "start" : "11:00" , "end" : "11:54" } ,
       {  "period" : "Period 7" , "start" : "12:00" , "end" : "12:54" }
     ] ,
-    "alarmsAfterStart"  : [ "0:45" ],
-    "alarmsBeforeEnd"   : [ "3:00" ]
+    "defaultAlarmsAfterStart"  : [ "0:45" ],
+    "defaultAlarmsBeforeEnd"   : [ "3:00" ]
   }
   `,
   `
@@ -54,8 +54,8 @@ let schedules = [
       {  "period" : "Period 5" , "start" : "11:00" , "end" : "11:54" } ,
       {  "period" : "Period 7" , "start" : "12:00" , "end" : "12:54" }
     ] ,
-    "alarmsAfterStart"  : [ "0:45" ],
-    "alarmsBeforeEnd"   : [ "3:00" ]
+    "defaultAlarmsAfterStart"  : [ "0:45" ],
+    "defaultAlarmsBeforeEnd"   : [ "3:00" ]
   }
    `
 ];
