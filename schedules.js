@@ -125,9 +125,20 @@ handleAddListeners('.modal-close, .modal-background', closeModal)
 handleAddListeners('.open-modal', openModal)
 
 document.getElementById('loadNewJSON').addEventListener('click', function() {
-  initializeClock(document.getElementById('customJSONEntry').value);
-  chooseInitOption('custom');
-  closeModal();
+  const textareaField = document.getElementById('customJSONEntry');
+  const btn = document.getElementById('loadNewJSON');
+  try {
+    textareaField.classList.remove('is-danger');
+    btn.classList.remove('is-danger')
+    initializeClock(textareaField.value);
+    chooseInitOption('custom');
+    closeModal();
+  } catch(e) {
+    textareaField.classList.add('is-danger');
+    btn.classList.add('is-danger')
+    alert(e.message);
+  }
+
 });
 
 document.getElementById('loadNewJSON').addEventListener('mouseup', function() { return false; });
