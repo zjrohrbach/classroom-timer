@@ -1,19 +1,16 @@
-//initialize global variables
-let timeOfPageLoad;
+'use strict';
+
+//initialize global array for holding Period objects
 let periodArray = [];
 
 //initialize clock with JSON.  
 function initializeClock(configJSON) {
 
   //clear all global variables
-  timeOfPageLoad = null;
   periodArray    = [];
   
   //parse the configJSON
   const configObject = JSON.parse(configJSON);
-
-  //set global variable
-  timeOfPageLoad     = new Date();
 
   //make a new Period for each block object in the configObject
   const blockTimes   = configObject.blocks;
@@ -64,17 +61,18 @@ function Period (periodName, startTime, endTime, alarmsAfter, alarmsBefore) {
   this.end    = endTime;
 
   //use the global alarmsAfter and alarmsBefore arrays to populate the alarms attribute
-  alarmsArray = [];
-
+  let alarmsArray = [];
+  
+  let currentTime = new Date();
   alarmsAfter.forEach( function(value, key) {
-    newTime = new Date(startTime.getTime() + parseInt(findMilliSecs(value)));
-    if (newTime > timeOfPageLoad) {
+    let newTime = new Date(startTime.getTime() + parseInt(findMilliSecs(value)));
+    if (newTime > currentTime) {
       alarmsArray.push(new Alarm(newTime));
     }
   });
   alarmsBefore.forEach( function(value, key) {
-    newTime = new Date(endTime.getTime() - parseInt(findMilliSecs(value)));
-    if (newTime > timeOfPageLoad) {
+    let newTime = new Date(endTime.getTime() - parseInt(findMilliSecs(value)));
+    if (newTime > currentTime) {
       alarmsArray.push(new Alarm (newTime));
     }
   });
@@ -131,9 +129,9 @@ function Alarm (alarmTime) {
 }
 
 //converts an "hh:mm" string to a Date object today at hh:mm
-function convertToTime(theTime) {
-  partsOfTime = theTime.split(":");
-  theTime     = new Date();
+function convertToTime(hhmmString) {
+  let partsOfTime = hhmmString.split(":");
+  let theTime     = new Date();
   theTime.setHours(partsOfTime[0])
   theTime.setMinutes(partsOfTime[1])
   theTime.setSeconds(0)
@@ -203,7 +201,7 @@ function printTimeString(theDate, includeSecs) {
     hourToPrint = leadingZeroes(theHour - 12);  
   }
   
-  let timestring = '';
+  let timeString = '';
 
   if (includeSecs) {
     timeString = `${hourToPrint}:${leadingZeroes(theMin)}:${leadingZeroes(theSec)} ${amPm}`;
