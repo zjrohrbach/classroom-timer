@@ -1,7 +1,6 @@
 //JSON templates for differnt Days [ template name, JSON ]
 let schedules = [
-  `
-  {
+  `{
     "title"   : "7 Periods",
     "blocks"  : [
       {  "period" : "Period 1" , "start" : "08:00" , "end" : "08:54" } ,
@@ -14,10 +13,8 @@ let schedules = [
     ] ,
     "defaultAlarmsAfterStart"  : [ "0:45" ],
     "defaultAlarmsBeforeEnd"   : [ "3:00" ]
-  }
-  `,
-  `
-  {
+  }`,
+  `{
     "title"   : "A Day",
     "blocks"  : [
       {  "period" : "Period 1" , "start" : "08:00" , "end" : "08:54" } ,
@@ -28,10 +25,8 @@ let schedules = [
     ] ,
     "defaultAlarmsAfterStart"  : [ "0:45" ],
     "defaultAlarmsBeforeEnd"   : [ "3:00" ]
-  }
-  `,
-  `
-  {
+  }`,
+  `{
     "title"   : "B Day",
     "blocks"  : [
       {  "period" : "Period 2" , "start" : "13:00" , "end" : "16:07" } ,
@@ -42,10 +37,8 @@ let schedules = [
     ] ,
     "defaultAlarmsAfterStart"  : [ "0:45" ],
     "defaultAlarmsBeforeEnd"   : [ "3:00" ]
-  }
-  `,
-  `
-  {
+  }`,
+  `{
     "title"   : "C Day",
     "blocks"  : [
       {  "period" : "Period 1" , "start" : "08:00" , "end" : "08:54" } ,
@@ -56,8 +49,7 @@ let schedules = [
     ] ,
     "defaultAlarmsAfterStart"  : [ "0:45" ],
     "defaultAlarmsBeforeEnd"   : [ "3:00" ]
-  }
-   `
+  }`
 ];
 
 
