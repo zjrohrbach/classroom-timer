@@ -5,15 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Daily Alarms</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
-    <style>td { width: 50%; height: 70px; } </style>
+    <style> td { width: 50%; height: 70px; } </style>
   </head>
   <body>
     <audio controls id="sound1" class="is-hidden">
       <source src="sound1.mp3" type="audio/mp3">
     </audio>
     <div class="container">
-      <div class="columns is-8">
-        <section class="column m-4">
+      <div class="columns is-8 m-2">
+        <section class="column">
           <h1 class="title is-1">Classroom Timer</h1>
           <div class="block">
             <pre id="displayTime" class="is-size-3">00:00:00 xm</pre>
@@ -43,7 +43,7 @@
             </div>
           </div>
         </section>
-        <section class="column card m-4">
+        <section class="column card">
           <h2 class="title is-3" id="scheduleName">No Schedule Chosen</h1>
             <p class="block">Current Period: <span id="currentPeriod">undefined</span></p>
             <table class="table is-stripe is-fullwidth" id="schedTable">
