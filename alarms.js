@@ -46,19 +46,23 @@ Period object will include
         period (arbitrary string), 
         start (a Date object for the start of the period), 
         end (a Date object for the end of the period),
-        trElement (an HTML <tr> element containing schedule info)
-        alarms (array of Date objects for when an alarm should accur)
-        removeAlarm(key): remove the <tr> of alarms[key] and then delete it from the alarms array
-        isCurrentPeriod(theTime): determine if the Date Object theTime falls within this period (theTime defaults to now)
-        makeSelected(boolValue): turn on (if true) or off (if false) the .is-selected class on the trElemement
+        duration (total millisecs in the period),
+        trElement (an HTML <tr> element containing schedule info),
+        alarms (array of Date objects for when an alarm should accur),
+        elapsedTime(): return millisecs since the start of the period,
+        percentageElapsed(): return the percentage of the period that has elapsed,
+        removeAlarm(key): remove the <tr> of alarms[key] and then delete it from the alarms array,
+        isCurrentPeriod(theTime): determine if the Date Object theTime falls within this period (theTime defaults to now),
+        makeSelected(boolValue): turn on (if true) or off (if false) the .is-selected class on the trElemement,
       }
 */
 function Period (periodName, startTime, endTime, alarmsAfter, alarmsBefore) {
   
   //define attributes
-  this.period = periodName;
-  this.start  = startTime;
-  this.end    = endTime;
+  this.period   = periodName;
+  this.start    = startTime;
+  this.end      = endTime;
+  this.duration = endTime - startTime;
 
   //use the global alarmsAfter and alarmsBefore arrays to populate the alarms attribute
   let alarmsArray = [];
@@ -84,7 +88,7 @@ function Period (periodName, startTime, endTime, alarmsAfter, alarmsBefore) {
   let periodTD   = document.createElement('td');
   this.trElement.appendChild(timeTD);
   this.trElement.appendChild(periodTD);
-  timeTD.textContent = `${printTimeString(this.start,false)} - ${printTimeString(this.end,false)}`;
+  timeTD.textContent = `${printTimeString(this.start,false)} - ${printTimeString(this.end, false, true)}`;
   periodTD.textContent = this.period;
   let newDiv     = document.createElement('div'); //this is going to hold all the alarm tags
   newDiv.classList.add('tags')
@@ -94,6 +98,15 @@ function Period (periodName, startTime, endTime, alarmsAfter, alarmsBefore) {
     newDiv.appendChild(alarmsArray[i].tagElement); //get all the alarms
   }
 
+}
+
+Period.prototype.elapsedTime = function() {
+  let curTime = new Date();
+  return curTime - this.start;
+}
+
+Period.prototype.percentageElapsed = function() {
+  return (this.elapsedTime() / this.duration * 100).toPrecision(4);
 }
 
 Period.prototype.removeAlarm = function(key) {
@@ -125,7 +138,7 @@ function Alarm (alarmTime) {
   this.time       = alarmTime;
   this.tagElement = document.createElement('span');
   this.tagElement.classList.add('tag', 'is-info');
-  this.tagElement.textContent = printTimeString(this.time,true);
+  this.tagElement.textContent = printTimeString(this.time, true, true);
 }
 
 //converts an "hh:mm" string to a Date object today at hh:mm
@@ -162,8 +175,9 @@ function updateTime() {
   const nowTime = new Date();
  
   //update display
-  displayTime.textContent   = printTimeString(nowTime, true);    //update the time
-  currentPeriod.textContent = 'passing period';                  //it is passing period unless the for loop below overrides this
+  displayTime.textContent   = printTimeString(nowTime, true, true);    //update the time
+  currentPeriod.textContent = 'passing period';                        //it is passing period unless the for loop below overrides this
+  updateProgressBar(0, 0, '');
 
   //determine which period we are in.  
   for (let i = 0; i < periodArray.length; i++) {
@@ -171,6 +185,11 @@ function updateTime() {
       periodArray[i].makeSelected(true);                  //add the .is-selected class
       currentPeriod.textContent = periodArray[i].period;  //display the current period
       checkAlarm(nowTime, i);                             //check for alarms
+      updateProgressBar(
+        periodArray[i].elapsedTime(), 
+        periodArray[i].duration, 
+        periodArray[i].percentageElapsed()
+      );
     } else { 
       periodArray[i].makeSelected(false);                 //remove the .is-selected class
     }
@@ -187,7 +206,7 @@ function leadingZeroes(number) {
 }
 
 //print Date object in human readable manner
-function printTimeString(theDate, includeSecs) {
+function printTimeString(theDate, includeSecs, incudeAmPm) {
   const theHour = theDate.getHours();
   const theMin  = theDate.getMinutes();
   const theSec  = theDate.getSeconds();
@@ -199,6 +218,10 @@ function printTimeString(theDate, includeSecs) {
   } else {
     amPm    = "pm";
     hourToPrint = leadingZeroes(theHour - 12);  
+  }
+
+  if (!incudeAmPm) {
+    amPm = '';
   }
   
   let timeString = '';
@@ -234,6 +257,18 @@ function checkAlarm(nowTime,periodArrayKey) {
 //do the alarm!
 function doAlarm() {
   document.getElementById('sound1').play()
+}
+
+//update the progressBar
+function updateProgressBar(timeElapsed, duration, percentage) {
+  let timeFromStart = new Date(timeElapsed);
+  let timeToGo      = new Date(duration - timeElapsed);
+  document.getElementById('progressBar').value       = percentage;
+  document.getElementById('timeElapsed').textContent = 
+    `${timeFromStart.getUTCHours()}:${leadingZeroes(timeFromStart.getUTCMinutes())}:${leadingZeroes(timeFromStart.getUTCSeconds())}`;
+  document.getElementById('timeToGo').textContent    =
+    `${timeToGo.getUTCHours()}:${leadingZeroes(timeToGo.getUTCMinutes())}:${leadingZeroes(timeToGo.getUTCSeconds())}`;
+
 }
 
 //when the page loads, start the clock

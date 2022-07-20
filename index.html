@@ -46,6 +46,17 @@
         <section class="column card">
           <h2 class="title is-3" id="scheduleName">No Schedule Chosen</h1>
             <p class="block">Current Period: <span id="currentPeriod">undefined</span></p>
+            <div class="level">
+              <div class="level-left px-2">
+                <code class="level-item" id="timeElapsed">0:00:00</code>
+              </div>
+              <p class="level-item">
+                <progress class="progress is-primary" value="0" max="100" id="progressBar"></progress>
+              </p>
+              <div class="level-right px-2">
+                <code class="level-item" id="timeToGo">0:00:00</code>
+              </div>
+            </div>
             <table class="table is-stripe is-fullwidth" id="schedTable">
               <thead>
                 <tr>
