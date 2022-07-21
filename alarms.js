@@ -49,8 +49,9 @@ Period object will include
         duration (total millisecs in the period),
         trElement (an HTML <tr> element containing schedule info),
         alarms (array of Date objects for when an alarm should accur),
-        elapsedTime(): return millisecs since the start of the period,
-        percentageElapsed(): return the percentage of the period that has elapsed,
+        overlayElement (<div> to overlay on progress bar),
+        timeElapsed(curTime): return millisecs since the start of the period (curTime is a Date object; it will work for current time if undefined),
+        percentageElapsed(curTime): return the percentage of the period that has elapsed,
         removeAlarm(key): remove the <tr> of alarms[key] and then delete it from the alarms array,
         isCurrentPeriod(theTime): determine if the Date Object theTime falls within this period (theTime defaults to now),
         makeSelected(boolValue): turn on (if true) or off (if false) the .is-selected class on the trElemement,
@@ -71,13 +72,13 @@ function Period (periodName, startTime, endTime, alarmsAfter, alarmsBefore) {
   alarmsAfter.forEach( function(value, key) {
     let newTime = new Date(startTime.getTime() + parseInt(findMilliSecs(value)));
     if (newTime > currentTime) {
-      alarmsArray.push(new Alarm(newTime));
+      alarmsArray.push(new Alarm(newTime, (((newTime - startTime)/(endTime - startTime)) * 100).toPrecision(4)));
     }
   });
   alarmsBefore.forEach( function(value, key) {
     let newTime = new Date(endTime.getTime() - parseInt(findMilliSecs(value)));
     if (newTime > currentTime) {
-      alarmsArray.push(new Alarm (newTime));
+      alarmsArray.push(new Alarm (newTime, (((newTime - startTime)/(endTime - startTime)) * 100).toPrecision(4)));
     }
   });
   this.alarms = alarmsArray;
@@ -93,24 +94,33 @@ function Period (periodName, startTime, endTime, alarmsAfter, alarmsBefore) {
   let newDiv     = document.createElement('div'); //this is going to hold all the alarm tags
   newDiv.classList.add('tags')
   periodTD.appendChild(newDiv);
+
+  //make <div> overlay
+  this.overlayElement = document.createElement('div');
+  this.overlayElement.classList.add('is-overlay', 'is-vcentered', 'alarm-diamond')
+  this.overlayElement.style.width = '100%';
+  this.overlayElement.style.left  = '-7px';
+  this.overlayElement.style.top   = '-5px';
+
   
   for (let i = 0; i < alarmsArray.length; i++) {
     newDiv.appendChild(alarmsArray[i].tagElement); //get all the alarms
+    this.overlayElement.appendChild(alarmsArray[i].progressTag);
   }
 
 }
 
-Period.prototype.elapsedTime = function() {
-  let curTime = new Date();
+Period.prototype.timeElapsed = function(curTime = new Date()) {
   return curTime - this.start;
 }
 
-Period.prototype.percentageElapsed = function() {
-  return (this.elapsedTime() / this.duration * 100).toPrecision(4);
+Period.prototype.percentageElapsed = function(curTime) {
+  return (this.timeElapsed(curTime) / this.duration * 100).toPrecision(4);
 }
 
 Period.prototype.removeAlarm = function(key) {
   this.alarms[key].tagElement.remove();
+  this.alarms[key].progressTag.remove();
   this.alarms.splice(key,1); 
 }
 
@@ -132,13 +142,19 @@ Alarm object will include
       {
         time (a Date object for when the alarm should occur)
         tagElement (a <span class="tag"> element for showing alarms on schedule)
+        progressTag (a <span> diamond with appropriate offset)
       }
 */
-function Alarm (alarmTime) {
-  this.time       = alarmTime;
-  this.tagElement = document.createElement('span');
+function Alarm (alarmTime, offset) {
+  this.time        = alarmTime;
+  this.tagElement  = document.createElement('span');
   this.tagElement.classList.add('tag', 'is-info');
   this.tagElement.textContent = printTimeString(this.time, true, true);
+  this.progressTag = document.createElement('span');
+  this.progressTag.classList.add('has-text-link', "is-size-5");
+  this.progressTag.style.position = 'absolute';
+  this.progressTag.style.left     = `${offset}%`;
+  this.progressTag.innerHTML      = '&diams;';
 }
 
 //converts an "hh:mm" string to a Date object today at hh:mm
@@ -157,12 +173,21 @@ function updateSchedTable() {
   //clear and recreate the <tbody>
   const schedTable  = document.getElementById('schedTable');
   const schedBody   = document.createElement('tbody');
+  const progOverlay = document.getElementById('progressContainer');
+  const progressBar = document.getElementById('progressBar');
   schedTable.getElementsByTagName('tbody')[0].remove();
   schedTable.appendChild(schedBody);
+
+  let diamonds = document.getElementsByClassName('alarm-diamond');
+
+  for (let i = 0; i < diamonds.length; i++) {
+    diamonds[i].remove();
+  }
 
   //retrieve the schedule <tr>'s and append them
   for (let i = 0; i < periodArray.length; i++) {
     schedBody.appendChild(periodArray[i].trElement);
+    progOverlay.insertBefore(periodArray[i].overlayElement, progressBar)
   }
 
 }
@@ -186,7 +211,7 @@ function updateTime() {
       currentPeriod.textContent = periodArray[i].period;  //display the current period
       checkAlarm(nowTime, i);                             //check for alarms
       updateProgressBar(
-        periodArray[i].elapsedTime(), 
+        periodArray[i].timeElapsed(), 
         periodArray[i].duration, 
         periodArray[i].percentageElapsed()
       );
