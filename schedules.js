@@ -1,6 +1,8 @@
+'use strict';
 //JSON templates for differnt Days [ template name, JSON ]
-let schedules
-if (typeof schedules == 'undefined') {
+
+let schedules;
+if (typeof custSched == 'undefined') {
   schedules = [
   `{
     "title"   : "7 Periods",
@@ -56,7 +58,10 @@ if (typeof schedules == 'undefined') {
     "defaultAlarmsAfterStart"  : [ "0:45" ],
     "defaultAlarmsBeforeEnd"   : [ "3:00" ]
   }`
-  ]; }
+  ];
+} else {
+  schedules = custSched;
+}
 
 
 function chooseInitOption(key) {
@@ -113,7 +118,7 @@ for (let i = 0; i < schedules.length; i++) {
 }
 
 function handleAddListeners(stmt, fn) {
-  elementArray = document.querySelectorAll(stmt);
+  const elementArray = document.querySelectorAll(stmt);
   for (let i = 0; i < elementArray.length; i++) {
     elementArray[i].addEventListener('click', fn);
   }
