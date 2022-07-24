@@ -22,8 +22,8 @@ function initializeClock(configJSON) {
         blockTimes[i].period, 
         convertToTime(blockTimes[i].start), 
         convertToTime(blockTimes[i].end),
-        blockTimes[i].alarmsAfterStart ?? defaultAlarmsAfter,
-        blockTimes[i].alarmsBeforeEnd  ?? defaultAlarmsBefore
+        blockTimes[i].alarmsAfterStart ?? defaultAlarmsAfter ?? [],
+        blockTimes[i].alarmsBeforeEnd  ?? defaultAlarmsBefore ?? []
       )
     )
   }
