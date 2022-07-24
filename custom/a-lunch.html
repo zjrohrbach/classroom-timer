@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html>
+  <head>    
+    <meta charset="utf-8"> 
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Daily Alarms</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
+    <style> td { width: 50%; height: 70px; } </style>
+    <script>
+     custSched = [
+  `{
+    "title"   : "7 Periods",
+    "blocks"  : [
+      {  "period" : "Period 1" , "start" : "08:25" , "end" : "09:12" ,
+            "alarmsAfterStart" : [] } ,
+      {  "period" : "Period 2" , "start" : "09:18" , "end" : "10:05" } ,
+      {  "period" : "Period 3" , "start" : "10:11" , "end" : "11:04" } ,
+      {  "period" : "Period 4" , "start" : "11:35" , "end" : "12:31" ,
+            "alarmsAfterStart" : [] } ,
+      {  "period" : "Period 5" , "start" : "12:37" , "end" : "13:24" } ,
+      {  "period" : "Period 6" , "start" : "13:30" , "end" : "14:17" } ,
+      {  "period" : "Period 7" , "start" : "14:23" , "end" : "15:10" }
+    ] ,
+    "defaultAlarmsAfterStart"  : [ "0:45" ],
+    "defaultAlarmsBeforeEnd"   : [ "3:00" ]
+  }`,
+  `{
+    "title"   : "A Day",
+    "blocks"  : [
+      {  "period" : "Period 1" , "start" : "08:25" , "end" : "09:33" ,
+            "alarmsAfterStart" : [] } ,
+      {  "period" : "Period 2" , "start" : "09:39" , "end" : "10:53" } ,
+      {  "period" : "Period 3" , "start" : "11:29" , "end" : "12:42" ,
+            "alarmsAfterStart" : [] } ,
+      {  "period" : "Period 5" , "start" : "12:48" , "end" : "13:56" } ,
+      {  "period" : "Period 6" , "start" : "14:02" , "end" : "15:10" }
+    ] ,
+    "defaultAlarmsAfterStart"  : [ "0:45" ],
+    "defaultAlarmsBeforeEnd"   : [ "3:00" ]
+  }`,
+  `{
+    "title"   : "B Day",
+    "blocks"  : [
+      {  "period" : "Period 2" , "start" : "08:25" , "end" : "09:33" ,
+            "alarmsAfterStart" : [] } ,
+      {  "period" : "SRT" , "start" : "09:39" , "end" : "10:53" } ,
+      {  "period" : "Period 4" , "start" : "11:29" , "end" : "12:42" ,
+            "alarmsAfterStart" : [] } ,
+      {  "period" : "Period 6" , "start" : "12:48" , "end" : "13:56" } ,
+      {  "period" : "Period 7" , "start" : "14:02" , "end" : "15:10" }
+    ] ,
+    "defaultAlarmsAfterStart"  : [ "0:45" ],
+    "defaultAlarmsBeforeEnd"   : [ "3:00" ]
+  }`,
+  `{
+    "title"   : "C Day",
+    "blocks"  : [
+      {  "period" : "Period 1" , "start" : "08:25" , "end" : "09:33" ,
+            "alarmsAfterStart" : [] } ,
+      {  "period" : "Period 3" , "start" : "09:39" , "end" : "10:53" } ,
+      {  "period" : "Period 4" , "start" : "11:29" , "end" : "12:42" ,
+            "alarmsAfterStart" : [] } ,
+      {  "period" : "Period 5" , "start" : "12:48" , "end" : "13:56" } ,
+      {  "period" : "Period 7" , "start" : "14:02" , "end" : "15:10" }
+    ] ,
+    "defaultAlarmsAfterStart"  : [ "0:45" ],
+    "defaultAlarmsBeforeEnd"   : [ "3:00" ]
+  }`
+    ];
+    </script>
+  </head>
+  <body>
+    <audio controls id="sound1" class="is-hidden">
+      <source src="sound1.mp3" type="audio/mp3">
+    </audio>
+    <div class="container">
+      <div class="columns is-8 m-2">
+        <section class="column">
+          <h1 class="title is-1">Classroom Timer</h1>
+          <h2 class="subtitle is-3">A-Lunch Based Timer</h2>
+          <p class="block">Period start times are after A-lunch.  No 0:45 bell after start of lunch period.</p>
+          <div class="block">
+            <pre id="displayTime" class="is-size-3">00:00:00 xm</pre>
+          </div>
+          <nav class="tabs is-toggle">
+            <ul id="schedOptions"></ul>
+          </nav>
+          <div>
+            <button class="button is-small is-light open-modal">Edit Configuration JSON</button>
+          </div>
+          <div id="customJSONContainer" class="modal">
+            <div class="modal-background"></div>
+            <div class="modal-content">
+              <div class="field">
+                <div class="control">
+                  <textarea class="textarea" id="customJSONEntry" rows="15"></textarea>
+                </div>
+              </div>
+              <div class="field">
+                <div class="control">
+                  <button class="button is-primary" id="loadNewJSON">
+                      Load Custom JSON Config
+                  </button>
+                </div>
+              </div>
+              <button class="modal-close is-large" aria-label="close"></button>
+            </div>
+          </div>
+        </section>
+        <section class="column card">
+          <h2 class="title is-3" id="scheduleName">No Schedule Chosen</h1>
+            <p class="block">Current Period: <span id="currentPeriod">undefined</span></p>
+            <div class="columns is-mobile is-vcentered">
+              <div class="column is-2-desktop is-one-quarter-mobile is-one-quarter-tablet has-text-right">
+                <span id="timeElapsed" class="tag is-primary is-light">0:00:00</span>
+              </div>
+              <div class="column is-relative p-0" id="progressContainer">
+                <progress class="progress is-primary" value="0" max="100" id="progressBar"></progress>
+              </div>
+              <div class="column is-2-desktop is-one-quarter-mobile is-one-quarter-tablet has-text-left">
+                <span id="timeToGo" class="tag is-primary is-light">0:00:00</span>
+              </div>
+            </div>
+            <table class="table is-stripe is-fullwidth" id="schedTable">
+              <thead>
+                <tr>
+                  <th>Time</th>
+                  <th>Period</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td colspan="2">Please Pick a Schedule</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+      </div>
+    </div>
+    <script src="../schedules.js"></script>
+    <script src="../alarms.js"></script>
+  </body>
+</html>
