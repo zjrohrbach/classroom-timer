@@ -1,15 +1,18 @@
 //JSON templates for differnt Days [ template name, JSON ]
-let schedules = [
+let schedules
+if (typeof schedules == 'undefined') {
+  schedules = [
   `{
     "title"   : "7 Periods",
     "blocks"  : [
-      {  "period" : "Period 1" , "start" : "08:00" , "end" : "08:54" } ,
-      {  "period" : "Period 2" , "start" : "09:00" , "end" : "09:54" } ,
-      {  "period" : "Period 3" , "start" : "10:00" , "end" : "10:54" } ,
-      {  "period" : "Period 4" , "start" : "11:00" , "end" : "11:54" } ,
-      {  "period" : "Period 5" , "start" : "12:00" , "end" : "12:54" } ,
-      {  "period" : "Period 6" , "start" : "13:00" , "end" : "21:50" } ,
-      {  "period" : "Period 7" , "start" : "22:00" , "end" : "23:57" }
+      {  "period" : "Period 1" , "start" : "08:25" , "end" : "09:12" ,
+         "alarmsAfterStart" : [] } ,
+      {  "period" : "Period 2" , "start" : "09:18" , "end" : "10:05" } ,
+      {  "period" : "Period 3" , "start" : "10:11" , "end" : "11:04" } ,
+      {  "period" : "Period 4" , "start" : "11:10" , "end" : "12:31" } ,
+      {  "period" : "Period 5" , "start" : "12:37" , "end" : "13:24" } ,
+      {  "period" : "Period 6" , "start" : "13:30" , "end" : "14:17" } ,
+      {  "period" : "Period 7" , "start" : "14:23" , "end" : "15:10" }
     ] ,
     "defaultAlarmsAfterStart"  : [ "0:45" ],
     "defaultAlarmsBeforeEnd"   : [ "3:00" ]
@@ -17,11 +20,12 @@ let schedules = [
   `{
     "title"   : "A Day",
     "blocks"  : [
-      {  "period" : "Period 1" , "start" : "08:00" , "end" : "08:54" } ,
-      {  "period" : "Period 2" , "start" : "09:00" , "end" : "09:54" } ,
-      {  "period" : "Period 3" , "start" : "10:00" , "end" : "10:54" } ,
-      {  "period" : "Period 5" , "start" : "13:00" , "end" : "21:50" } ,
-      {  "period" : "Period 6" , "start" : "12:00" , "end" : "12:54" }
+      {  "period" : "Period 1" , "start" : "08:25" , "end" : "09:33" ,
+         "alarmsAfterStart" : [] } ,
+      {  "period" : "Period 2" , "start" : "09:39" , "end" : "10:53" } ,
+      {  "period" : "Period 3" , "start" : "10:59" , "end" : "12:42" } ,
+      {  "period" : "Period 5" , "start" : "12:48" , "end" : "13:56" } ,
+      {  "period" : "Period 6" , "start" : "14:02" , "end" : "15:10" }
     ] ,
     "defaultAlarmsAfterStart"  : [ "0:45" ],
     "defaultAlarmsBeforeEnd"   : [ "3:00" ]
@@ -29,11 +33,12 @@ let schedules = [
   `{
     "title"   : "B Day",
     "blocks"  : [
-      {  "period" : "Period 2" , "start" : "13:00" , "end" : "16:07" } ,
-      {  "period" : "SRT"      , "start" : "09:00" , "end" : "09:54" } ,
-      {  "period" : "Period 4" , "start" : "10:00" , "end" : "10:54" } ,
-      {  "period" : "Period 6" , "start" : "11:00" , "end" : "11:54" } ,
-      {  "period" : "Period 7" , "start" : "12:00" , "end" : "12:54" }
+      {  "period" : "Period 2" , "start" : "08:25" , "end" : "09:33" ,
+         "alarmsAfterStart" : [] } ,
+      {  "period" : "SRT" , "start" : "09:39" , "end" : "10:53" } ,
+      {  "period" : "Period 4" , "start" : "10:59" , "end" : "12:42" } ,
+      {  "period" : "Period 6" , "start" : "12:48" , "end" : "13:56" } ,
+      {  "period" : "Period 7" , "start" : "14:02" , "end" : "15:10" }
     ] ,
     "defaultAlarmsAfterStart"  : [ "0:45" ],
     "defaultAlarmsBeforeEnd"   : [ "3:00" ]
@@ -41,16 +46,17 @@ let schedules = [
   `{
     "title"   : "C Day",
     "blocks"  : [
-      {  "period" : "Period 1" , "start" : "08:00" , "end" : "08:54" } ,
-      {  "period" : "Period 3" , "start" : "09:00" , "end" : "09:54" } ,
-      {  "period" : "Period 4" , "start" : "10:00" , "end" : "10:54" } ,
-      {  "period" : "Period 5" , "start" : "11:00" , "end" : "11:54" } ,
-      {  "period" : "Period 7" , "start" : "12:00" , "end" : "12:54" }
+      {  "period" : "Period 1" , "start" : "08:25" , "end" : "09:33" ,
+         "alarmsAfterStart" : [] } ,
+      {  "period" : "Period 3" , "start" : "09:39" , "end" : "10:53" } ,
+      {  "period" : "Period 4" , "start" : "10:59" , "end" : "12:42" } ,
+      {  "period" : "Period 5" , "start" : "12:48" , "end" : "13:56" } ,
+      {  "period" : "Period 7" , "start" : "14:02" , "end" : "15:10" }
     ] ,
     "defaultAlarmsAfterStart"  : [ "0:45" ],
     "defaultAlarmsBeforeEnd"   : [ "3:00" ]
   }`
-];
+  ]; }
 
 
 function chooseInitOption(key) {
