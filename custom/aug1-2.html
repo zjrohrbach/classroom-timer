@@ -55,11 +55,24 @@
           <div class="block">
             <pre id="displayTime" class="is-size-3">00:00:00 xm</pre>
           </div>
+          <details class="block">
+            <summary>Adjust Clock</summary>
+            <div class="field has-addons is-horizontal m-2 ml-5">
+              <label class="label is-small m-2" for="offsetSecs">Clock Offset:</label>
+              <div class="control">
+                <input type="number" class="input is-small" id="offsetSecs" min="-600" max="600" size="4" /> 
+              </div>
+              <div class="control">
+                <a class="button is-small is-static">seconds</a>
+              </div> 
+            </div>
+          </details>
           <nav class="tabs is-toggle">
             <ul id="schedOptions"></ul>
           </nav>
           <div>
             <button class="button is-small is-light open-modal">Edit Configuration JSON</button>
+            <button class="button is-small is-light is-info" onclick="doAlarm()">Test Alarm</button>
           </div>
           <div id="customJSONContainer" class="modal">
             <div class="modal-background"></div>

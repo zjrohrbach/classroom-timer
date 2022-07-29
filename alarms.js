@@ -2,6 +2,7 @@
 
 //initialize global array for holding Period objects
 let periodArray = [];
+let timeOffset = 0;
 
 //initialize clock with JSON.  
 function initializeClock(configJSON) {
@@ -67,7 +68,7 @@ function Period (periodName, startTime, endTime, alarmsAfter, alarmsBefore) {
   //use the global alarmsAfter and alarmsBefore arrays to populate the alarms attribute
   let alarmsArray = [];
   
-  let currentTime = new Date();
+  let currentTime = nowTime();
   alarmsAfter.forEach( function(value, key) {
     let newTime = new Date(startTime.getTime() + parseInt(findMilliSecs(value)));
     if (newTime > currentTime) {
@@ -101,7 +102,7 @@ function Period (periodName, startTime, endTime, alarmsAfter, alarmsBefore) {
 }
 
 Period.prototype.elapsedTime = function() {
-  let curTime = new Date();
+  let curTime = nowTime();
   return curTime - this.start;
 }
 
@@ -114,7 +115,7 @@ Period.prototype.removeAlarm = function(key) {
   this.alarms.splice(key,1); 
 }
 
-Period.prototype.isCurrentPeriod = function(theTime = new Date()) {
+Period.prototype.isCurrentPeriod = function(theTime = nowTime()) {
   return (theTime >= this.start && theTime <= this.end)
 }
 
@@ -172,10 +173,9 @@ function updateSchedTable() {
 function updateTime() {
   const displayTime   = document.getElementById('displayTime');
   const currentPeriod = document.getElementById('currentPeriod');
-  const nowTime = new Date();
  
   //update display
-  displayTime.textContent   = printTimeString(nowTime, true, true);    //update the time
+  displayTime.textContent   = printTimeString(nowTime(), true, true);    //update the time
   currentPeriod.textContent = 'passing period';                        //it is passing period unless the for loop below overrides this
   updateProgressBar(0, 0, '');
 
@@ -184,7 +184,7 @@ function updateTime() {
     if (periodArray[i].isCurrentPeriod()) {
       periodArray[i].makeSelected(true);                  //add the .is-selected class
       currentPeriod.textContent = periodArray[i].period;  //display the current period
-      checkAlarm(nowTime, i);                             //check for alarms
+      checkAlarm(nowTime(), i);                             //check for alarms
       updateProgressBar(
         periodArray[i].elapsedTime(), 
         periodArray[i].duration, 
@@ -271,5 +271,36 @@ function updateProgressBar(timeElapsed, duration, percentage) {
 
 }
 
-//when the page loads, start the clock
+function nowTime() {
+  let millisecs = (new Date()).getTime();
+  millisecs = millisecs + timeOffset;
+  let timeObj = new Date(millisecs)
+  return timeObj;
+}
+
+function updateOffset() {
+  const element = document.getElementById('offsetSecs');
+  timeOffset = element.value * 1000;
+  document.cookie = `offset=${timeOffset};max-age=${21*360000};SameSite=None;Secure;path=/;`;
+  updateTime();
+}
+
+function readOffsetCookie() {
+  let cookieName = 'offset=';
+  let decodedCookie = decodeURIComponent(document.cookie);
+  let cookieArray = decodedCookie.split(';');
+  let cookieOffset = 0;
+  for (let i = 0; i < cookieArray.length; i++) {
+    if (cookieArray[i].indexOf(cookieName) === 0) {
+      cookieOffset = cookieArray[i].substring(cookieName.length);
+    }
+  }
+  return cookieOffset;
+}
+
+document.getElementById('offsetSecs').addEventListener('change', updateOffset);
+
+//when the page loads, start the clock and set the offsetSecs correctly
 updateTime();
+timeOffset = parseInt(readOffsetCookie());
+document.getElementById('offsetSecs').value = Math.floor(timeOffset / 1000);
