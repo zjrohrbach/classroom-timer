@@ -1,8 +1,6 @@
 'use strict';
 
 //initialize global array for holding Period objects
-const timerRefreshInterval = 60 * 1000; //refresh once per minute
-let refreshTimer;
 let periodArray = [];
 let alarmId = 0;
 let periodId = 0;
@@ -42,7 +40,6 @@ function initializeClock(configJSON) {
 
   //start the clock
   updateTime();
-  refreshAllTimers();
 
 }
 
@@ -165,15 +162,13 @@ Alarm.prototype.refreshTimer = function () {
   this.timer = setTimeout(resolveAlarm, (this.time - nowTime()), this.periodId, this.id);
 }
 
-//refresh all the timers.  Runs periodically at timerRefreshInterval to clear any bottlenecks
+//refresh all the timers to avoid timeout drift
 function refreshAllTimers() {
   for (let i = 0; i < periodArray.length; i++) {
     for (let j = 0; j < periodArray[i].alarms.length; j++) {
       periodArray[i].alarms[j].refreshTimer();
     }
   }
-  clearTimeout(refreshTimer);
-  refreshTimer = setTimeout(refreshAllTimers, timerRefreshInterval);
 }
 
 //trigger the alarm then remove it
@@ -234,6 +229,9 @@ function updateTime() {
       periodArray[i].makeSelected(false);                 //remove the .is-selected class
     }
   } 
+
+  //refresh timers to prevent drift
+  refreshAllTimers();
 
   //call this function again in one second
   setTimeout(updateTime, 1000);
@@ -311,7 +309,6 @@ function updateOffset() {
   timeOffset = element.value * 1000;
   document.cookie = `offset=${timeOffset};max-age=${21*360000};SameSite=None;Secure;path=/;`;
   updateTime();
-  refreshAllTimers();
 }
 
 function readOffsetCookie() {
