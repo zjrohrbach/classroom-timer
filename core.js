@@ -1,7 +1,11 @@
 'use strict';
 
 //initialize global array for holding Period objects
+const timerRefreshInterval = 60 * 1000; //refresh once per minute
+let refreshTimer;
 let periodArray = [];
+let alarmId = 0;
+let periodId = 0;
 let timeOffset = 0;
 
 //initialize clock with JSON.  
@@ -9,6 +13,7 @@ function initializeClock(configJSON) {
 
   //clear all global variables
   periodArray    = [];
+  periodId       = 0;
   
   //parse the configJSON
   const configObject = JSON.parse(configJSON);
@@ -37,6 +42,7 @@ function initializeClock(configJSON) {
 
   //start the clock
   updateTime();
+  refreshAllTimers();
 
 }
 
@@ -44,6 +50,7 @@ function initializeClock(configJSON) {
 /*
 Period object will include 
      {
+        id (autoincremented from periodId)
         period (arbitrary string), 
         start (a Date object for the start of the period), 
         end (a Date object for the end of the period),
@@ -60,6 +67,7 @@ Period object will include
 function Period (periodName, startTime, endTime, alarmsAfter, alarmsBefore) {
   
   //define attributes
+  this.id       = periodId;
   this.period   = periodName;
   this.start    = startTime;
   this.end      = endTime;
@@ -72,13 +80,13 @@ function Period (periodName, startTime, endTime, alarmsAfter, alarmsBefore) {
   alarmsAfter.forEach( function(value, key) {
     let newTime = new Date(startTime.getTime() + parseInt(findMilliSecs(value)));
     if (newTime > currentTime) {
-      alarmsArray.push(new Alarm(newTime));
+      alarmsArray.push(new Alarm(newTime, periodId));
     }
   });
   alarmsBefore.forEach( function(value, key) {
     let newTime = new Date(endTime.getTime() - parseInt(findMilliSecs(value)));
     if (newTime > currentTime) {
-      alarmsArray.push(new Alarm (newTime));
+      alarmsArray.push(new Alarm (newTime, periodId));
     }
   });
   this.alarms = alarmsArray;
@@ -98,7 +106,7 @@ function Period (periodName, startTime, endTime, alarmsAfter, alarmsBefore) {
   for (let i = 0; i < alarmsArray.length; i++) {
     newDiv.appendChild(alarmsArray[i].tagElement); //get all the alarms
   }
-
+  periodId++;
 }
 
 Period.prototype.elapsedTime = function() {
@@ -110,7 +118,8 @@ Period.prototype.percentageElapsed = function() {
   return (this.elapsedTime() / this.duration * 100).toPrecision(4);
 }
 
-Period.prototype.removeAlarm = function(key) {
+Period.prototype.removeAlarm = function(idToRemove) {
+  const key = this.alarms.findIndex((obj) => obj.id === idToRemove);
   this.alarms[key].tagElement.remove();
   this.alarms.splice(key,1); 
 }
@@ -131,15 +140,47 @@ Period.prototype.makeSelected = function(boolValue) {
 /*
 Alarm object will include 
       {
+        id (an id for this alarm; autoincremented from periodId)
+        periodId (id that maps to object in the periodArray)
         time (a Date object for when the alarm should occur)
         tagElement (a <span class="tag"> element for showing alarms on schedule)
+        timer (timeout for when the alarm should occur)
+        refreshTimer()  (function for refreshing timer in case of bottlenecks in code)
       }
 */
-function Alarm (alarmTime) {
+function Alarm (alarmTime, pdId) {
+  this.id         = alarmId;
+  this.periodId   = pdId;
   this.time       = alarmTime;
   this.tagElement = document.createElement('span');
   this.tagElement.classList.add('tag', 'is-info');
   this.tagElement.textContent = printTimeString(this.time, true, true);
+  this.timer      = null;
+  this.refreshTimer();
+  alarmId++;
+}
+
+Alarm.prototype.refreshTimer = function () {
+  clearTimeout(this.timer);
+  this.timer = setTimeout(resolveAlarm, (this.time - nowTime()), this.periodId, this.id);
+}
+
+//refresh all the timers.  Runs periodically at timerRefreshInterval to clear any bottlenecks
+function refreshAllTimers() {
+  for (let i = 0; i < periodArray.length; i++) {
+    for (let j = 0; j < periodArray[i].alarms.length; j++) {
+      periodArray[i].alarms[j].refreshTimer();
+    }
+  }
+  clearTimeout(refreshTimer);
+  refreshTimer = setTimeout(refreshAllTimers, timerRefreshInterval);
+}
+
+//trigger the alarm then remove it
+function resolveAlarm(period, alarm) {
+  doAlarm();
+  const key = periodArray.findIndex((obj) => obj.id == period);
+  periodArray[key].removeAlarm(alarm);    
 }
 
 //converts an "hh:mm" string to a Date object today at hh:mm
@@ -169,7 +210,7 @@ function updateSchedTable() {
 }
 
 
-//update the time and put it in the #displayTime, also check for alarms
+//update the time and put it in the #displayTime
 function updateTime() {
   const displayTime   = document.getElementById('displayTime');
   const currentPeriod = document.getElementById('currentPeriod');
@@ -184,7 +225,6 @@ function updateTime() {
     if (periodArray[i].isCurrentPeriod()) {
       periodArray[i].makeSelected(true);                  //add the .is-selected class
       currentPeriod.textContent = periodArray[i].period;  //display the current period
-      checkAlarm(nowTime(), i);                             //check for alarms
       updateProgressBar(
         periodArray[i].elapsedTime(), 
         periodArray[i].duration, 
@@ -242,18 +282,6 @@ function findMilliSecs(mmSS) {
   return (numMinsAlarm * 60000) + (numSecsAlarm * 1000);
 }
 
-//check to see if there's an alarm. If so, doAlarm()
-function checkAlarm(nowTime,periodArrayKey) {
-  const alarmsArray = periodArray[periodArrayKey].alarms;
-  for (let i = 0; i < alarmsArray.length; i++) {
-    if ( alarmsArray[i].time - nowTime <= 0 ) {
-      doAlarm();
-      periodArray[periodArrayKey].removeAlarm(i);    
-        //remove this alarm from the periodArray so it doesn't get called again
-    } 
-  }
-}
-
 //do the alarm!
 function doAlarm() {
   document.getElementById('sound1').play()
@@ -283,6 +311,7 @@ function updateOffset() {
   timeOffset = element.value * 1000;
   document.cookie = `offset=${timeOffset};max-age=${21*360000};SameSite=None;Secure;path=/;`;
   updateTime();
+  refreshAllTimers();
 }
 
 function readOffsetCookie() {
