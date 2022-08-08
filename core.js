@@ -175,7 +175,8 @@ function refreshAllTimers() {
 function resolveAlarm(period, alarm) {
   doAlarm();
   const key = periodArray.findIndex((obj) => obj.id == period);
-  periodArray[key].removeAlarm(alarm);    
+  periodArray[key].removeAlarm(alarm);
+  refreshAllTimers();
 }
 
 //converts an "hh:mm" string to a Date object today at hh:mm
@@ -229,9 +230,6 @@ function updateTime() {
       periodArray[i].makeSelected(false);                 //remove the .is-selected class
     }
   } 
-
-  //refresh timers to prevent drift
-  refreshAllTimers();
 
   //call this function again in one second
   setTimeout(updateTime, 1000);
@@ -309,6 +307,7 @@ function updateOffset() {
   timeOffset = element.value * 1000;
   document.cookie = `offset=${timeOffset};max-age=${21*360000};SameSite=None;Secure;path=/;`;
   updateTime();
+  refreshAllTimers();
 }
 
 function readOffsetCookie() {
