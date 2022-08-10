@@ -84,6 +84,7 @@ function chooseInitOption(key) {
 
 function closeModal() {
   document.getElementById('customJSONContainer').classList.remove('is-active');
+  refreshAllTimers();
 }
 
 function openModal() {
