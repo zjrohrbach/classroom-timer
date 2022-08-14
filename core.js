@@ -12,6 +12,7 @@ function initializeClock(configJSON) {
   //clear all global variables
   periodArray    = [];
   periodId       = 0;
+  alarmId        = 0;
   
   //parse the configJSON
   const configObject = JSON.parse(configJSON);
@@ -115,12 +116,6 @@ Period.prototype.percentageElapsed = function() {
   return (this.elapsedTime() / this.duration * 100).toPrecision(4);
 }
 
-Period.prototype.removeAlarm = function(idToRemove) {
-  const key = this.alarms.findIndex((obj) => obj.id === idToRemove);
-  this.alarms[key].tagElement.remove();
-  this.alarms.splice(key,1); 
-}
-
 Period.prototype.isCurrentPeriod = function(theTime = nowTime()) {
   return (theTime >= this.start && theTime <= this.end)
 }
@@ -143,6 +138,7 @@ Alarm object will include
         tagElement (a <span class="tag"> element for showing alarms on schedule)
         timer (timeout for when the alarm should occur)
         refreshTimer()  (function for refreshing timer in case of bottlenecks in code)
+        resolveAlarm() (trigger the alarm and then remove it)
       }
 */
 function Alarm (alarmTime, pdId) {
@@ -159,7 +155,22 @@ function Alarm (alarmTime, pdId) {
 
 Alarm.prototype.refreshTimer = function () {
   clearTimeout(this.timer);
-  this.timer = setTimeout(resolveAlarm, (this.time - nowTime()), this.periodId, this.id);
+  this.timer = setTimeout(this.resolveAlarm.bind(this), (this.time - nowTime()));
+  console.log(`timer for alarm # ${this.id} set at ${printTimeString(nowTime(),true, true)} for length ${(this.time - nowTime())}`)
+
+}
+
+Alarm.prototype.resolveAlarm = function () {
+  doAlarm();
+  this.removeAlarm();
+  refreshAllTimers();
+}
+
+Alarm.prototype.removeAlarm = function() {
+  const periodKey = periodArray.findIndex((obj) => obj.id == this.periodId);
+  const alarmsKey = periodArray[periodKey].alarms.findIndex((obj) => obj.id == this.id);
+  this.tagElement.remove();
+  periodArray[periodKey].alarms.splice(alarmsKey,1); 
 }
 
 //refresh all the timers to avoid timeout drift
@@ -169,14 +180,6 @@ function refreshAllTimers() {
       periodArray[i].alarms[j].refreshTimer();
     }
   }
-}
-
-//trigger the alarm then remove it
-function resolveAlarm(period, alarm) {
-  doAlarm();
-  const key = periodArray.findIndex((obj) => obj.id == period);
-  periodArray[key].removeAlarm(alarm);
-  refreshAllTimers();
 }
 
 //converts an "hh:mm" string to a Date object today at hh:mm
