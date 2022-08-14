@@ -57,7 +57,6 @@ Period object will include
         alarms (array of Date objects for when an alarm should accur),
         elapsedTime(): return millisecs since the start of the period,
         percentageElapsed(): return the percentage of the period that has elapsed,
-        removeAlarm(key): remove the <tr> of alarms[key] and then delete it from the alarms array,
         isCurrentPeriod(theTime): determine if the Date Object theTime falls within this period (theTime defaults to now),
         makeSelected(boolValue): turn on (if true) or off (if false) the .is-selected class on the trElemement,
       }
@@ -139,6 +138,7 @@ Alarm object will include
         timer (timeout for when the alarm should occur)
         refreshTimer()  (function for refreshing timer in case of bottlenecks in code)
         resolveAlarm() (trigger the alarm and then remove it)
+        removeAlarm(key): remove the <tr> of this alarm then splice it out of its parent array.
       }
 */
 function Alarm (alarmTime, pdId) {
