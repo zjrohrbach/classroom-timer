@@ -136,6 +136,7 @@ Alarm object will include
         time (a Date object for when the alarm should occur)
         tagElement (a <span class="tag"> element for showing alarms on schedule)
         timer (timeout for when the alarm should occur)
+        isActive (switch when alarm fires to protect against double-firing due to unexpected timing of code execution)
         refreshTimer()  (function for refreshing timer in case of bottlenecks in code)
         resolveAlarm() (trigger the alarm and then remove it)
         removeAlarm(key): remove the <tr> of this alarm then splice it out of its parent array.
@@ -149,6 +150,7 @@ function Alarm (alarmTime, pdId) {
   this.tagElement.classList.add('tag', 'is-info');
   this.tagElement.textContent = printTimeString(this.time, true, true);
   this.timer      = null;
+  this.isActive   = true;
   this.refreshTimer();
   alarmId++;
 }
@@ -156,17 +158,17 @@ function Alarm (alarmTime, pdId) {
 Alarm.prototype.refreshTimer = function () {
   clearTimeout(this.timer);
   this.timer = setTimeout(this.resolveAlarm.bind(this), (this.time - nowTime()));
-  console.log(`timer for alarm # ${this.id} set at ${printTimeString(nowTime(),true, true)} for length ${(this.time - nowTime())}`)
-
 }
 
 Alarm.prototype.resolveAlarm = function () {
-  doAlarm();
+  (this.isActive) && doAlarm(); //only fire if the alarm is active
   this.removeAlarm();
   refreshAllTimers();
 }
 
 Alarm.prototype.removeAlarm = function() {
+  this.isActive = false;
+  clearTimeout(this.timer);
   const periodKey = periodArray.findIndex((obj) => obj.id == this.periodId);
   const alarmsKey = periodArray[periodKey].alarms.findIndex((obj) => obj.id == this.id);
   this.tagElement.remove();
