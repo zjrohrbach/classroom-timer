@@ -11,10 +11,10 @@ let clockTimeout;
 function initializeClock(configJSON) {
 
   //clear all global variables
+  clearAllAlarms();
   periodArray    = [];
   periodId       = 0;
   alarmId        = 0;
-  clearAllAlarms();
   
   //parse the configJSON
   const configObject = JSON.parse(configJSON);
