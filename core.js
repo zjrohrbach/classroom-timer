@@ -1,10 +1,11 @@
 'use strict';
 
-//initialize global array for holding Period objects
+//initialize global variables
 let periodArray = [];
 let alarmId = 0;
 let periodId = 0;
 let timeOffset = 0;
+let clockTimeout;
 
 //initialize clock with JSON.  
 function initializeClock(configJSON) {
@@ -13,6 +14,7 @@ function initializeClock(configJSON) {
   periodArray    = [];
   periodId       = 0;
   alarmId        = 0;
+  clearAllAlarms();
   
   //parse the configJSON
   const configObject = JSON.parse(configJSON);
@@ -70,7 +72,6 @@ function Period (periodName, startTime, endTime, alarmsAfter, alarmsBefore) {
   this.end      = endTime;
   this.duration = endTime - startTime;
 
-  //use the global alarmsAfter and alarmsBefore arrays to populate the alarms attribute
   let alarmsArray = [];
   
   let currentTime = nowTime();
@@ -184,6 +185,15 @@ function refreshAllTimers() {
   }
 }
 
+//clear all Alarms in each Period until there aren't any left.
+function clearAllAlarms() {
+  for (let i = 0; i < periodArray.length; i++) {
+    while (periodArray[i].alarms.length > 0) {
+      periodArray[i].alarms[0].removeAlarm();
+    }
+  }
+}
+
 //converts an "hh:mm" string to a Date object today at hh:mm
 function convertToTime(hhmmString) {
   let partsOfTime = hhmmString.split(":");
@@ -237,7 +247,8 @@ function updateTime() {
   } 
 
   //call this function again in one second
-  setTimeout(updateTime, 1000);
+  clearTimeout(clockTimeout);
+  clockTimeout = setTimeout(updateTime, 1000);
 
 }
 
