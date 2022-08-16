@@ -296,7 +296,8 @@ function findMilliSecs(mmSS) {
 
 //do the alarm!
 function doAlarm() {
-  document.getElementById('sound1').play()
+  document.getElementById('sound1').play();
+  console.info(`Alarm triggered at ${printTimeString(nowTime(),true,true)}`);
 }
 
 //update the progressBar
