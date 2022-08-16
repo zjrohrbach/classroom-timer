@@ -164,7 +164,6 @@ Alarm.prototype.refreshTimer = function () {
 Alarm.prototype.resolveAlarm = function () {
   (this.isActive) && doAlarm(); //only fire if the alarm is active
   this.removeAlarm();
-  refreshAllTimers();
 }
 
 Alarm.prototype.removeAlarm = function() {
