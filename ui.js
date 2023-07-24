@@ -8,7 +8,7 @@ if (typeof custSched == 'undefined') {
     "title"   : "7 Periods",
     "blocks"  : [
       {  "period" : "Period 1" , "start" : "08:25" , "end" : "09:12" ,
-         "alarmsAfterStart" : [] } ,
+               "alarmsAfterStart" : [] } ,
       {  "period" : "Period 2" , "start" : "09:18" , "end" : "10:05" } ,
       {  "period" : "Period 3" , "start" : "10:11" , "end" : "11:04" } ,
       {  "period" : "Period 4" , "start" : "11:10" , "end" : "12:31" } ,
@@ -17,46 +17,20 @@ if (typeof custSched == 'undefined') {
       {  "period" : "Period 7" , "start" : "14:23" , "end" : "15:10" }
     ] ,
     "defaultAlarmsAfterStart"  : [ "0:45" ],
-    "defaultAlarmsBeforeEnd"   : [ "3:00" ]
+    "defaultAlarmsBeforeEnd"   : [ "2:00" ]
   }`,
   `{
-    "title"   : "A Day",
+    "title"   : "ABC Day",
     "blocks"  : [
-      {  "period" : "Period 1" , "start" : "08:25" , "end" : "09:33" ,
-         "alarmsAfterStart" : [] } ,
-      {  "period" : "Period 2" , "start" : "09:39" , "end" : "10:53" } ,
-      {  "period" : "Period 3" , "start" : "10:59" , "end" : "12:42" } ,
-      {  "period" : "Period 5" , "start" : "12:48" , "end" : "13:56" } ,
-      {  "period" : "Period 6" , "start" : "14:02" , "end" : "15:10" }
+      {  "period" : "Block 1" , "start" : "08:25" , "end" : "09:33" ,
+             "alarmsAfterStart" : [] } ,
+      {  "period" : "Block 2" , "start" : "09:39" , "end" : "10:53" } ,
+      {  "period" : "Block 3" , "start" : "10:59" , "end" : "12:42" } ,
+      {  "period" : "Block 4" , "start" : "12:48" , "end" : "13:56" } ,
+      {  "period" : "Block 5" , "start" : "14:02" , "end" : "15:10" }
     ] ,
     "defaultAlarmsAfterStart"  : [ "0:45" ],
-    "defaultAlarmsBeforeEnd"   : [ "3:00" ]
-  }`,
-  `{
-    "title"   : "B Day",
-    "blocks"  : [
-      {  "period" : "Period 2" , "start" : "08:25" , "end" : "09:33" ,
-         "alarmsAfterStart" : [] } ,
-      {  "period" : "SRT" , "start" : "09:39" , "end" : "10:53" } ,
-      {  "period" : "Period 4" , "start" : "10:59" , "end" : "12:42" } ,
-      {  "period" : "Period 6" , "start" : "12:48" , "end" : "13:56" } ,
-      {  "period" : "Period 7" , "start" : "14:02" , "end" : "15:10" }
-    ] ,
-    "defaultAlarmsAfterStart"  : [ "0:45" ],
-    "defaultAlarmsBeforeEnd"   : [ "3:00" ]
-  }`,
-  `{
-    "title"   : "C Day",
-    "blocks"  : [
-      {  "period" : "Period 1" , "start" : "08:25" , "end" : "09:33" ,
-         "alarmsAfterStart" : [] } ,
-      {  "period" : "Period 3" , "start" : "09:39" , "end" : "10:53" } ,
-      {  "period" : "Period 4" , "start" : "10:59" , "end" : "12:42" } ,
-      {  "period" : "Period 5" , "start" : "12:48" , "end" : "13:56" } ,
-      {  "period" : "Period 7" , "start" : "14:02" , "end" : "15:10" }
-    ] ,
-    "defaultAlarmsAfterStart"  : [ "0:45" ],
-    "defaultAlarmsBeforeEnd"   : [ "3:00" ]
+    "defaultAlarmsBeforeEnd"   : [ "2:00" ]
   }`
   ];
 } else {
