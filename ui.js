@@ -7,29 +7,53 @@ if (typeof custSched == 'undefined') {
   `{
     "title"   : "7 Periods",
     "blocks"  : [
-      {  "period" : "Period 1" , "start" : "08:25" , "end" : "09:12" ,
-               "alarmsAfterStart" : [] } ,
-      {  "period" : "Period 2" , "start" : "09:18" , "end" : "10:05" } ,
-      {  "period" : "Period 3" , "start" : "10:11" , "end" : "11:04" } ,
+      {  "period" : "Period 1" , "start" : "08:25" , "end" : "09:11" } ,
+      {  "period" : "Period 2" , "start" : "09:18" , "end" : "10:04" } ,
+      {  "period" : "Period 3" , "start" : "10:11" , "end" : "11:03" } ,
       {  "period" : "Period 4" , "start" : "11:10" , "end" : "12:31" } ,
-      {  "period" : "Period 5" , "start" : "12:37" , "end" : "13:24" } ,
-      {  "period" : "Period 6" , "start" : "13:30" , "end" : "14:17" } ,
-      {  "period" : "Period 7" , "start" : "14:23" , "end" : "15:10" }
+      {  "period" : "Period 5" , "start" : "12:38" , "end" : "13:24" } ,
+      {  "period" : "Period 6" , "start" : "13:31" , "end" : "14:17" } ,
+      {  "period" : "Period 7" , "start" : "14:24" , "end" : "15:10" }
     ] ,
-    "defaultAlarmsAfterStart"  : [ "0:45" ],
+    "defaultAlarmsAfterStart"  : [],
     "defaultAlarmsBeforeEnd"   : [ "2:00" ]
   }`,
   `{
     "title"   : "ABC Day",
     "blocks"  : [
-      {  "period" : "Block 1" , "start" : "08:25" , "end" : "09:33" ,
-             "alarmsAfterStart" : [] } ,
-      {  "period" : "Block 2" , "start" : "09:39" , "end" : "10:53" } ,
+      {  "period" : "Block 1" , "start" : "08:25" , "end" : "09:32" } ,
+      {  "period" : "Block 2" , "start" : "09:39" , "end" : "10:52" } ,
       {  "period" : "Block 3" , "start" : "10:59" , "end" : "12:42" } ,
-      {  "period" : "Block 4" , "start" : "12:48" , "end" : "13:56" } ,
-      {  "period" : "Block 5" , "start" : "14:02" , "end" : "15:10" }
+      {  "period" : "Block 4" , "start" : "12:49" , "end" : "13:56" } ,
+      {  "period" : "Block 5" , "start" : "14:03" , "end" : "15:10" }
     ] ,
-    "defaultAlarmsAfterStart"  : [ "0:45" ],
+    "defaultAlarmsAfterStart"  : [],
+    "defaultAlarmsBeforeEnd"   : [ "2:00" ]
+  }`,
+  `{
+    "title"   : "7 Periods (C-Lunch)",
+    "blocks"  : [
+      {  "period" : "Period 1" , "start" : "08:25" , "end" : "09:11" } ,
+      {  "period" : "Period 2" , "start" : "09:18" , "end" : "10:04" } ,
+      {  "period" : "Period 3" , "start" : "10:11" , "end" : "11:03" } ,
+      {  "period" : "Period 4" , "start" : "11:10" , "end" : "12:06" } ,
+      {  "period" : "Period 5" , "start" : "12:38" , "end" : "13:24" } ,
+      {  "period" : "Period 6" , "start" : "13:31" , "end" : "14:17" } ,
+      {  "period" : "Period 7" , "start" : "14:24" , "end" : "15:10" }
+    ] ,
+    "defaultAlarmsAfterStart"  : [],
+    "defaultAlarmsBeforeEnd"   : [ "2:00" ]
+  }`,
+  `{
+    "title"   : "ABC Day (C-Lunch)",
+    "blocks"  : [
+      {  "period" : "Block 1" , "start" : "08:25" , "end" : "09:32" } ,
+      {  "period" : "Block 2" , "start" : "09:39" , "end" : "10:52" } ,
+      {  "period" : "Block 3" , "start" : "10:59" , "end" : "12:12" } ,
+      {  "period" : "Block 4" , "start" : "12:49" , "end" : "13:56" } ,
+      {  "period" : "Block 5" , "start" : "14:03" , "end" : "15:10" }
+    ] ,
+    "defaultAlarmsAfterStart"  : [],
     "defaultAlarmsBeforeEnd"   : [ "2:00" ]
   }`
   ];
