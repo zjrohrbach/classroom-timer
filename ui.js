@@ -7,13 +7,13 @@ if (typeof custSched == 'undefined') {
   `{
     "title"   : "7 Periods",
     "blocks"  : [
-      {  "period" : "Period 1" , "start" : "08:25" , "end" : "09:11" } ,
-      {  "period" : "Period 2" , "start" : "09:18" , "end" : "10:04" } ,
-      {  "period" : "Period 3" , "start" : "10:11" , "end" : "11:03" } ,
-      {  "period" : "Period 4" , "start" : "11:10" , "end" : "12:31" } ,
-      {  "period" : "Period 5" , "start" : "12:38" , "end" : "13:24" } ,
-      {  "period" : "Period 6" , "start" : "13:31" , "end" : "14:17" } ,
-      {  "period" : "Period 7" , "start" : "14:24" , "end" : "15:10" }
+      {  "period" : "Period 1" , "start" : "08:25" , "end" : "09:09" } ,
+      {  "period" : "Period 2" , "start" : "09:16" , "end" : "10:00" } ,
+      {  "period" : "Period 3" , "start" : "10:07" , "end" : "10:57" } ,
+      {  "period" : "Period 4" , "start" : "11:04" , "end" : "12:37" } ,
+      {  "period" : "Period 5" , "start" : "12:44" , "end" : "13:28" } ,
+      {  "period" : "Period 6" , "start" : "13:35" , "end" : "14:19" } ,
+      {  "period" : "Period 7" , "start" : "14:26" , "end" : "15:10" }
     ] ,
     "defaultAlarmsAfterStart"  : [],
     "defaultAlarmsBeforeEnd"   : [ "2:00" ]
@@ -33,13 +33,13 @@ if (typeof custSched == 'undefined') {
   `{
     "title"   : "7 Periods (C-Lunch)",
     "blocks"  : [
-      {  "period" : "Period 1" , "start" : "08:25" , "end" : "09:11" } ,
-      {  "period" : "Period 2" , "start" : "09:18" , "end" : "10:04" } ,
-      {  "period" : "Period 3" , "start" : "10:11" , "end" : "11:03" } ,
-      {  "period" : "Period 4" , "start" : "11:10" , "end" : "12:06" } ,
-      {  "period" : "Period 5" , "start" : "12:38" , "end" : "13:24" } ,
-      {  "period" : "Period 6" , "start" : "13:31" , "end" : "14:17" } ,
-      {  "period" : "Period 7" , "start" : "14:24" , "end" : "15:10" }
+      {  "period" : "Period 1" , "start" : "08:25" , "end" : "09:09" } ,
+      {  "period" : "Period 2" , "start" : "09:16" , "end" : "10:00" } ,
+      {  "period" : "Period 3" , "start" : "10:07" , "end" : "10:57" } ,
+      {  "period" : "Period 4" , "start" : "11:04" , "end" : "12:08" } ,
+      {  "period" : "Period 5" , "start" : "12:44" , "end" : "13:28" } ,
+      {  "period" : "Period 6" , "start" : "13:35" , "end" : "14:19" } ,
+      {  "period" : "Period 7" , "start" : "14:26" , "end" : "15:10" }
     ] ,
     "defaultAlarmsAfterStart"  : [],
     "defaultAlarmsBeforeEnd"   : [ "2:00" ]
