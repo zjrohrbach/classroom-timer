@@ -339,9 +339,21 @@ function readOffsetCookie() {
   return cookieOffset;
 }
 
-document.getElementById('offsetSecs').addEventListener('change', updateOffset);
+function timerInit() {
+  document.getElementById('offsetSecs').addEventListener('change', updateOffset);
 
-//when the page loads, start the clock and set the offsetSecs correctly
-updateTime();
-timeOffset = parseInt(readOffsetCookie());
-document.getElementById('offsetSecs').value = Math.floor(timeOffset / 1000);
+  //when the page loads, start the clock and set the offsetSecs correctly
+  updateTime();
+  timeOffset = parseInt(readOffsetCookie());
+  document.getElementById('offsetSecs').value = Math.floor(timeOffset / 1000);
+}
+
+
+
+document.addEventListener('DOMContentLoaded', () => {
+    const pageType = document.body.dataset.page;
+
+    if (pageType === 'timer') {
+        timerInit();
+    }
+});

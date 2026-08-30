@@ -96,25 +96,6 @@ function openModal() {
 //////////////////////////////////////////////////
 
 
-let buttonElements = [];
-const placeToPut = document.getElementById('schedOptions');
-
-for (let i = 0; i < schedules.length; i++) {
-  //parse the schedule
-  const data = JSON.parse(schedules[i]);
-  
-  //make a new entry into the nav ul
-  let newLI = document.createElement('li');
-  let newLink = document.createElement('a');
-  newLI.appendChild(newLink);
-  newLink.addEventListener('click', function() { chooseInitOption(i) });
-  newLink.addEventListener('mouseup', function() { return false; });
-  newLink.textContent = data.title;
-
-  //append the new entry
-  buttonElements.push(newLI)
-  placeToPut.appendChild(newLI);
-}
 
 function handleAddListeners(stmt, fn) {
   const elementArray = document.querySelectorAll(stmt);
@@ -123,24 +104,54 @@ function handleAddListeners(stmt, fn) {
   }
 }
 
-handleAddListeners('.modal-close, .modal-background', closeModal)
-handleAddListeners('.open-modal', openModal)
 
-document.getElementById('loadNewJSON').addEventListener('click', function() {
-  const textareaField = document.getElementById('customJSONEntry');
-  const btn = document.getElementById('loadNewJSON');
-  try {
-    textareaField.classList.remove('is-danger');
-    btn.classList.remove('is-danger')
-    initializeClock(textareaField.value);
-    chooseInitOption('custom');
-    closeModal();
-  } catch(e) {
-    textareaField.classList.add('is-danger');
-    btn.classList.add('is-danger')
-    alert(e.message);
-  }
+document.addEventListener('DOMContentLoaded', () => {
+    const pageType = document.body.dataset.page;
 
+    if (pageType === 'timer') {
+
+      let buttonElements = [];
+      const placeToPut = document.getElementById('schedOptions');
+
+      for (let i = 0; i < schedules.length; i++) {
+        //parse the schedule
+        const data = JSON.parse(schedules[i]);
+        
+        //make a new entry into the nav ul
+        let newLI = document.createElement('li');
+        let newLink = document.createElement('a');
+        newLI.appendChild(newLink);
+        newLink.addEventListener('click', function() { chooseInitOption(i) });
+        newLink.addEventListener('mouseup', function() { return false; });
+        newLink.textContent = data.title;
+
+        //append the new entry
+        buttonElements.push(newLI)
+        placeToPut.appendChild(newLI);
+      }
+
+
+      handleAddListeners('.modal-close, .modal-background', closeModal)
+      handleAddListeners('.open-modal', openModal)
+
+      document.getElementById('loadNewJSON').addEventListener('click', function() {
+        const textareaField = document.getElementById('customJSONEntry');
+        const btn = document.getElementById('loadNewJSON');
+        try {
+          textareaField.classList.remove('is-danger');
+          btn.classList.remove('is-danger')
+          initializeClock(textareaField.value);
+          chooseInitOption('custom');
+          closeModal();
+        } catch(e) {
+          textareaField.classList.add('is-danger');
+          btn.classList.add('is-danger')
+          alert(e.message);
+        }
+
+      });
+
+      document.getElementById('loadNewJSON').addEventListener('mouseup', function() { return false; });
+    }
 });
 
-document.getElementById('loadNewJSON').addEventListener('mouseup', function() { return false; });
