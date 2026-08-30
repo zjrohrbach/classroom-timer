@@ -1,10 +1,8 @@
 'use strict';
 //JSON templates for differnt Days [ template name, JSON ]
 
-let schedules;
-if (typeof custSched == 'undefined') {
-  schedules = [
-  `{
+const defaultSchedules = `[
+  {
     "title"   : "7 Periods",
     "blocks"  : [
       {  "period" : "Period 1" , "start" : "08:25" , "end" : "09:09" } ,
@@ -17,8 +15,8 @@ if (typeof custSched == 'undefined') {
     ] ,
     "defaultAlarmsAfterStart"  : [],
     "defaultAlarmsBeforeEnd"   : [ "2:00" ]
-  }`,
-  `{
+  },
+  {
     "title"   : "ABC Day",
     "blocks"  : [
       {  "period" : "Block 1" , "start" : "08:25" , "end" : "09:32" } ,
@@ -29,8 +27,8 @@ if (typeof custSched == 'undefined') {
     ] ,
     "defaultAlarmsAfterStart"  : [],
     "defaultAlarmsBeforeEnd"   : [ "2:00" ]
-  }`,
-  `{
+  },
+  {
     "title"   : "7 Periods (C-Lunch)",
     "blocks"  : [
       {  "period" : "Period 1" , "start" : "08:25" , "end" : "09:09" } ,
@@ -43,8 +41,8 @@ if (typeof custSched == 'undefined') {
     ] ,
     "defaultAlarmsAfterStart"  : [],
     "defaultAlarmsBeforeEnd"   : [ "2:00" ]
-  }`,
-  `{
+  },
+  {
     "title"   : "ABC Day (C-Lunch)",
     "blocks"  : [
       {  "period" : "Block 1" , "start" : "08:25" , "end" : "09:32" } ,
@@ -55,19 +53,16 @@ if (typeof custSched == 'undefined') {
     ] ,
     "defaultAlarmsAfterStart"  : [],
     "defaultAlarmsBeforeEnd"   : [ "2:00" ]
-  }`
-  ];
-} else {
-  schedules = custSched;
-}
+  }
+  ]`;
+
+const schedules = JSON.parse(localStorage.getItem('classroomTimers')) || JSON.parse(defaultSchedules)
 
 
 function chooseInitOption(key) {
 
   if (key != 'custom' ) { 
     initializeClock(schedules[key]);
-    document.getElementById('customJSONEntry').value = schedules[key];
-    document.getElementById(`initOption-${key}`);
   }
 
   for (let i = 0; i < buttonElements.length; i++) {
@@ -78,15 +73,6 @@ function chooseInitOption(key) {
     }
   }
 
-}
-
-function closeModal() {
-  document.getElementById('customJSONContainer').classList.remove('is-active');
-  refreshAllTimers();
-}
-
-function openModal() {
-  document.getElementById('customJSONContainer').classList.add('is-active');
 }
 
 
@@ -104,18 +90,19 @@ function handleAddListeners(stmt, fn) {
   }
 }
 
+let buttonElements = [];
+const placeToPut = document.getElementById('schedOptions');
 
 document.addEventListener('DOMContentLoaded', () => {
     const pageType = document.body.dataset.page;
 
     if (pageType === 'timer') {
 
-      let buttonElements = [];
-      const placeToPut = document.getElementById('schedOptions');
+
 
       for (let i = 0; i < schedules.length; i++) {
         //parse the schedule
-        const data = JSON.parse(schedules[i]);
+        const data = schedules[i];
         
         //make a new entry into the nav ul
         let newLI = document.createElement('li');
@@ -129,29 +116,6 @@ document.addEventListener('DOMContentLoaded', () => {
         buttonElements.push(newLI)
         placeToPut.appendChild(newLI);
       }
-
-
-      handleAddListeners('.modal-close, .modal-background', closeModal)
-      handleAddListeners('.open-modal', openModal)
-
-      document.getElementById('loadNewJSON').addEventListener('click', function() {
-        const textareaField = document.getElementById('customJSONEntry');
-        const btn = document.getElementById('loadNewJSON');
-        try {
-          textareaField.classList.remove('is-danger');
-          btn.classList.remove('is-danger')
-          initializeClock(textareaField.value);
-          chooseInitOption('custom');
-          closeModal();
-        } catch(e) {
-          textareaField.classList.add('is-danger');
-          btn.classList.add('is-danger')
-          alert(e.message);
-        }
-
-      });
-
-      document.getElementById('loadNewJSON').addEventListener('mouseup', function() { return false; });
     }
 });
 

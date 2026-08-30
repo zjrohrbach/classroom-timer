@@ -34,26 +34,8 @@
             <ul id="schedOptions"></ul>
           </nav>
           <div>
-            <button class="button is-small is-light open-modal">Edit Configuration JSON</button>
+            <button class="button is-small is-light open-modal" onclick="window.location.href = 'schedule-editor.html'">Edit Schedules</button>
             <button class="button is-small is-light is-info" onclick="doAlarm()">Test Alarm</button>
-          </div>
-          <div id="customJSONContainer" class="modal">
-            <div class="modal-background"></div>
-            <div class="modal-content">
-              <div class="field">
-                <div class="control">
-                  <textarea class="textarea" id="customJSONEntry" rows="15"></textarea>
-                </div>
-              </div>
-              <div class="field">
-                <div class="control">
-                  <button class="button is-primary" id="loadNewJSON">
-                      Load Custom JSON Config
-                  </button>
-                </div>
-              </div>
-              <button class="modal-close is-large" aria-label="close"></button>
-            </div>
           </div>
         </section>
         <section class="column card">

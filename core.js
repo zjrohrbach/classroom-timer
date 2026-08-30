@@ -8,7 +8,7 @@ let timeOffset = 0;
 let clockTimeout;
 
 //initialize clock with JSON.  
-function initializeClock(configJSON) {
+function initializeClock(configObject) {
 
   //clear all global variables
   clearAllAlarms();
@@ -17,7 +17,7 @@ function initializeClock(configJSON) {
   alarmId        = 0;
   
   //parse the configJSON
-  const configObject = JSON.parse(configJSON);
+  //const configObject = JSON.parse(configJSON);
 
   //make a new Period for each block object in the configObject
   const blockTimes   = configObject.blocks;
