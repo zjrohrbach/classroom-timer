@@ -348,12 +348,4 @@ function timerInit() {
   document.getElementById('offsetSecs').value = Math.floor(timeOffset / 1000);
 }
 
-
-
-document.addEventListener('DOMContentLoaded', () => {
-    const pageType = document.body.dataset.page;
-
-    if (pageType === 'timer') {
-        timerInit();
-    }
-});
+timerInit();

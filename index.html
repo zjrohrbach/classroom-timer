@@ -5,9 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Daily Alarms</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
-    <style> td { width: 50%; height: 70px; } </style>
+    <style> 
+      td { width: 50%; height: 70px; } 
+      dialog { width: 90%; }
+    </style>
   </head>
-  <body data-page="timer">
+  <body>
     <audio controls id="sound1" class="is-hidden">
       <source src="sound1.mp3" type="audio/mp3">
     </audio>
@@ -34,7 +37,7 @@
             <ul id="schedOptions"></ul>
           </nav>
           <div>
-            <button class="button is-small is-light open-modal" onclick="window.location.href = 'schedule-editor.html'">Edit Schedules</button>
+            <button class="button is-small is-light open-modal" command="show-modal" commandfor="editor-modal" type="button"><!-- onclick="document.getElementById('editor-modal').showModal()">-->Edit Schedules</button>
             <button class="button is-small is-light is-info" onclick="doAlarm()">Test Alarm</button>
           </div>
         </section>
@@ -69,7 +72,30 @@
         </section>
       </div>
     </div>
+    <dialog id="editor-modal" closedby="any">
+      <h2>Schedule Editor</h2>
+      <nav class="tabs is-toggle">
+        <ul id="list-of-schedules">
+        </ul>
+      </nav>
+      <main>
+        <section id="schedule-container"></section>
+        <section>
+          <h3>Add Alarms</h3>
+          <label for="num-mins">Add Alarm</label>
+          <input type="number" id="num-mins" min="1" max="10" value="1">
+          minutes
+          <input type="button" id="after-start" value="after Start Bell">
+          <input type="button" id="before-end" value="before End Bell">
+          <div id="period-checkboxes"></div>
+        </section>
+      </main>
+      <pre id="output-json" hidden>
+
+      </pre>
+    </dialog>
     <script src="ui.js"></script>
     <script src="core.js"></script>
+    <script src="editor.js"></script>
   </body>
 </html>

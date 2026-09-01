@@ -93,29 +93,22 @@ function handleAddListeners(stmt, fn) {
 let buttonElements = [];
 const placeToPut = document.getElementById('schedOptions');
 
-document.addEventListener('DOMContentLoaded', () => {
-    const pageType = document.body.dataset.page;
 
-    if (pageType === 'timer') {
+for (let i = 0; i < schedules.length; i++) {
+  //parse the schedule
+  const data = schedules[i];
+  
+  //make a new entry into the nav ul
+  let newLI = document.createElement('li');
+  let newLink = document.createElement('a');
+  newLI.appendChild(newLink);
+  newLink.addEventListener('click', function() { chooseInitOption(i) });
+  newLink.addEventListener('mouseup', function() { return false; });
+  newLink.textContent = data.title;
 
+  //append the new entry
+  buttonElements.push(newLI)
+  placeToPut.appendChild(newLI);
+}
 
-
-      for (let i = 0; i < schedules.length; i++) {
-        //parse the schedule
-        const data = schedules[i];
-        
-        //make a new entry into the nav ul
-        let newLI = document.createElement('li');
-        let newLink = document.createElement('a');
-        newLI.appendChild(newLink);
-        newLink.addEventListener('click', function() { chooseInitOption(i) });
-        newLink.addEventListener('mouseup', function() { return false; });
-        newLink.textContent = data.title;
-
-        //append the new entry
-        buttonElements.push(newLI)
-        placeToPut.appendChild(newLI);
-      }
-    }
-});
 
