@@ -198,7 +198,7 @@
         return newHours + ':' + newMinutes
       },
 
-      addPeriod(per = 'untitled period', start, end) {
+      addPeriod(per, start, end) {
 
         if (start === undefined && this.state.currentScheduleObject.blocks.length > 0) {
           start = this.addTimes(this.state.currentScheduleObject.blocks.at(-1).end, this.config.passingPeriodMins)
@@ -212,9 +212,9 @@
           end = this.addTimes(start, this.config.periodLengthMins)
         }
 
-        /*if (per === undefined) {
+        if (per === undefined) {
           per = 'Period ' + (this.state.currentScheduleObject.blocks.length + 1)
-        }*/
+        }
 
         this.state.currentScheduleObject.blocks.push({ period: per, start: start, end: end, alarmsAfterStart: [], alarmsBeforeEnd: [] })
         this.update()
@@ -226,6 +226,18 @@
         this.update()
       },
 
+      deleteCurrentSchedule() {
+        this.state.schedules.splice(this.state.scheduleIndex,1)
+
+        if (this.state.schedules.length == 0) {
+          this.createNewSchedule()
+        }
+
+        this.update()
+        this.switchSchedule(0)
+        this.enableSaving()
+      },
+
       update() {
         
         this.htmlElements.scheduleContainer.replaceChildren()
@@ -234,8 +246,8 @@
         this.state.currentScheduleObject.blocks.forEach(
           (block, index) => this.makePeriodElement(block.period, block.start, block.end, index, block.alarmsBeforeEnd ?? [], block.alarmsAfterStart ?? [])
         )
-        const finalElem = document.createElement('fieldset')
-        finalElem.classList.add('box','p-2', 'm-2')
+        const addPer = document.createElement('fieldset')
+        addPer.classList.add('box','p-2', 'm-2')
         const addButton = document.createElement('input')
         addButton.type = 'button'
         addButton.value = "+ Add Period"
@@ -244,8 +256,8 @@
           this.addPeriod()
           this.enableSaving()
         })
-        finalElem.appendChild(addButton)
-        this.htmlElements.scheduleContainer.appendChild(finalElem)
+        addPer.appendChild(addButton)
+        this.htmlElements.scheduleContainer.appendChild(addPer)
  
         this.refreshScheduleNav()
 
@@ -312,7 +324,10 @@
         editorModal: document.getElementById('editor-modal'),
         openEditorModalButton: document.getElementById('open-editor-modal'),
         saveChangesButton: document.getElementById('save-changes'),
-        currentScheduleTitleHeading: document.getElementById('current-schedule-title')
+        discardChangesButton: document.getElementById('discard-changes'),
+        currentScheduleTitleHeading: document.getElementById('current-schedule-title'),
+        deleteScheduleButton: document.getElementById('delete-current-schedule'),
+        editorWindow: document.getElementById('editor-window')
       },
 
       insertAlarm(alarmArray, newAlarm) {
@@ -350,7 +365,14 @@
           this.htmlElements.editorModal.classList.add('is-active')
         })
         this.htmlElements.saveChangesButton.addEventListener('click', () => {this.saveToStorage()})
+        this.htmlElements.discardChangesButton.addEventListener('click', () => {
+          this.htmlElements.editorModal.classList.remove('is-active')
+        })
         this.htmlElements.currentScheduleTitleHeading.addEventListener('input', () => this.updateTitle())
+        this.htmlElements.deleteScheduleButton.addEventListener('click', () => {
+         this.deleteCurrentSchedule()
+         this.htmlElements.editorWindow.scrollTo(0,0)
+        })
 
       },
     }

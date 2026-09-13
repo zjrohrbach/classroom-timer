@@ -70,7 +70,7 @@
           </nav>
           <div>
             <button class="button is-small is-light open-modal" command="show-modal" commandfor="editor-modal" type="button" id="open-editor-modal">Edit Schedules</button>
-            <button class="button is-small is-light is-info" onclick="doAlarm()">Test Alarm</button>
+            <button class="button is-small is-light is-info" id="test-alarm">Test Alarm</button>
           </div>
         </section>
         <div class="modal" id="editor-modal">
@@ -79,7 +79,7 @@
             <header class="modal-card-head">
               <p class="modal-card-title">Schedule Editor</p>
             </header>
-            <section class="modal-card-body">
+            <section class="modal-card-body" id="editor-window">
               <div class="tabs is-boxed is-small">
                 <ul id="list-of-schedules">
                 </ul>
@@ -88,6 +88,9 @@
                 <section class="column is-two-thirds">
                   <h2 contenteditable="plaintext-only" id="current-schedule-title" class="title is-5 has-background-light p-2 m-0">Undefined</h2>
                   <div id="schedule-container"></div>
+                  <div class="buttons m-3 is-centered">
+                    <button class="button is-danger is-fullwidth is-outlined" id="delete-current-schedule">Delete This Schedule</button>
+                  </div>   
                 </section>
                 <section class="column">
                   <div class="box sticky">
@@ -110,7 +113,7 @@
             </section>
             <footer class="modal-card-foot buttons is-right">
               <button class="button is-success" id="save-changes">Save changes</button>
-              <button class="button" onclick="document.getElementById('editor-modal').classList.remove('is-active')">Discard changes</button>
+              <button class="button" id="discard-changes">Discard changes</button>
             </footer>
           </div>
         </div>

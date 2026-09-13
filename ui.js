@@ -93,6 +93,8 @@ function handleAddListeners(stmt, fn) {
 let buttonElements = [];
 const placeToPut = document.getElementById('schedOptions');
 
+const testAlarmButton = document.getElementById('test-alarm')
+testAlarmButton.addEventListener('click', () => doAlarm())
 
 for (let i = 0; i < schedules.length; i++) {
   //parse the schedule
