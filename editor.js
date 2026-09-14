@@ -300,8 +300,8 @@
 
       },
 
-      createNewSchedule() {
-        const newSchedule = {
+      createNewSchedule(newSchedule) {
+        newSchedule ??= {
           title: "New Schedule",
           blocks: [],
         }
@@ -327,6 +327,7 @@
         discardChangesButton: document.getElementById('discard-changes'),
         currentScheduleTitleHeading: document.getElementById('current-schedule-title'),
         deleteScheduleButton: document.getElementById('delete-current-schedule'),
+        duplicateScheduleButton: document.getElementById('duplicate-current-schedule'),
         editorWindow: document.getElementById('editor-window')
       },
 
@@ -370,8 +371,14 @@
         })
         this.htmlElements.currentScheduleTitleHeading.addEventListener('input', () => this.updateTitle())
         this.htmlElements.deleteScheduleButton.addEventListener('click', () => {
-         this.deleteCurrentSchedule()
-         this.htmlElements.editorWindow.scrollTo(0,0)
+          this.deleteCurrentSchedule()
+          this.htmlElements.editorWindow.scrollTo(0,0)
+        })
+        this.htmlElements.duplicateScheduleButton.addEventListener('click', () => {
+          const newSched = structuredClone(this.state.currentScheduleObject)
+          newSched.title = newSched.title + ' (copy)'
+          this.createNewSchedule(newSched)
+          this.htmlElements.editorWindow.scrollTo(0,0)
         })
 
       },
