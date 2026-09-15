@@ -96,6 +96,7 @@
 
         const handleEvent = () => {
           this.updateScheduleObject(index, perTitle.value, perStart.value, perEnd.value)
+          refreshAlarms()
         }
 
 
@@ -107,36 +108,38 @@
         const alarmContainer = document.createElement('div')
         alarmContainer.classList.add('tags')
 
-        afterBegin.forEach((alarmTime, j) => {
+        const addAlarm = (alarmTime, j, alarmList, baseTime, addSub) => {
           const [minutes, seconds] = alarmTime.split(':').map(Number)
 
           const newAlarm = document.createElement('span')
           newAlarm.classList.add('tag','is-info','is-small')
-          newAlarm.innerText = this.militaryStringToAMPMString(this.addTimes(start, minutes))
+          newAlarm.innerText = this.militaryStringToAMPMString(this.addTimes(baseTime,addSub*minutes))
           newAlarm.classList.add('alarm')
 
 
           newAlarm.addEventListener('click', () => {
-            this.state.currentScheduleObject.blocks[index].alarmsAfterStart.splice(j, 1)
+            alarmList.splice(j, 1)
             this.update()
           })
           alarmContainer.appendChild(newAlarm)
-        })
+        }
 
-        beforeEnd.forEach((alarmTime, j) => {
-          const [minutes, seconds] = alarmTime.split(':').map(Number)
-
-          const newAlarm = document.createElement('span')
-          newAlarm.classList.add('tag','is-info')
-          newAlarm.innerText = this.militaryStringToAMPMString(this.addTimes(end, -1 * minutes))
-          newAlarm.classList.add('alarm')
-
-          newAlarm.addEventListener('click', () => {
-            this.state.currentScheduleObject.blocks[index].alarmsBeforeEnd.splice(j, 1)
-            this.update()
+        const refreshAlarms = () => {
+          alarmContainer.replaceChildren()
+          afterBegin.forEach((alarmTime, j) => {
+            addAlarm(alarmTime, j, this.state.currentScheduleObject.blocks[index].alarmsAfterStart, 
+              this.state.currentScheduleObject.blocks[index].start, 1)
           })
-          alarmContainer.appendChild(newAlarm)
-        })
+
+          beforeEnd.forEach((alarmTime, j) => {
+            addAlarm(alarmTime, j, this.state.currentScheduleObject.blocks[index].alarmsBeforeEnd, 
+              this.state.currentScheduleObject.blocks[index].end, -1)
+          })
+        }
+
+        refreshAlarms()
+
+
 
         newElement.appendChild(alarmContainer)
         this.htmlElements.scheduleContainer.appendChild(newElement)
@@ -343,6 +346,7 @@
             this.state.currentScheduleObject.blocks[j].alarmsAfterStart,
             this.htmlElements.numMinutesInput.value + ':00')
         })
+        this.enableSaving()
         this.update()
       },
 
@@ -353,6 +357,7 @@
             this.htmlElements.numMinutesInput.value + ':00'
           )
         })
+        this.enableSaving()
         this.update()
       },
 
